@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sentry/browser": "^6.9.0",
     "@sentry/react": "^6.9.0",
     "@sentry/tracing": "^6.9.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -52,7 +53,6 @@
     ]
   },
   "devDependencies": {
-    "@sentry/cli": "^1.67.2",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "eslint-config-airbnb": "^18.2.1",
