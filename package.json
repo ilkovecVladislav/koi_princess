@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@sentry/browser": "^6.9.0",
+    "@sentry/react": "^6.9.0",
+    "@sentry/tracing": "^6.9.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -26,7 +27,7 @@
     "eject": "react-scripts eject",
     "eslint": "tsc --noEmit && eslint --ext .ts,.tsx ./src/",
     "lint-fix": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./src/ --fix --max-warnings=0",
-    "release": "(export REACT_APP_SENTRY_RELEASE=$(git rev-parse --short HEAD); react-scripts build && node scripts/sentry.js)"
+    "release": "(export REACT_APP_SENTRY_RELEASE=$(git rev-parse --short=12 HEAD); react-scripts build)"
   },
   "lint-staged": {
     "*.(ts|tsx)": [
