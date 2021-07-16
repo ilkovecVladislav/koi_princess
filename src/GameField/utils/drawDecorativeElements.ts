@@ -1,4 +1,4 @@
-import { MutableRefObject } from "react";
+import { MutableRefObject } from 'react';
 
 interface Params {
   ctx: CanvasRenderingContext2D;
@@ -15,13 +15,7 @@ export const drawPrincess = ({ ctx, imageRef }: Params): void => {
   if (imageRef.current) {
     const imageWidth = 180;
     const ratio = imageRef.current.height / imageRef.current.width;
-    ctx.drawImage(
-      imageRef.current,
-      0,
-      150,
-      imageWidth,
-      imageWidth + 130 * ratio
-    );
+    ctx.drawImage(imageRef.current, 0, 150, imageWidth, imageWidth + 130 * ratio);
   }
 };
 
@@ -29,11 +23,7 @@ interface DrawLogoParams extends Params {
   canvasRef: MutableRefObject<HTMLCanvasElement | null>;
 }
 
-export const drawLogo = ({
-  ctx,
-  imageRef,
-  canvasRef,
-}: DrawLogoParams): void => {
+export const drawLogo = ({ ctx, imageRef, canvasRef }: DrawLogoParams): void => {
   if (imageRef.current && canvasRef.current) {
     const imageWidth = 500;
     const ratio = imageRef.current.height / imageRef.current.width;
@@ -42,7 +32,7 @@ export const drawLogo = ({
       canvasRef.current.width / 2 - 200,
       10,
       imageWidth,
-      imageWidth * ratio
+      imageWidth * ratio,
     );
   }
 };

@@ -1,4 +1,4 @@
-import { MutableRefObject } from "react";
+import { MutableRefObject } from 'react';
 
 interface Params {
   ctx: CanvasRenderingContext2D;
@@ -10,29 +10,24 @@ interface Params {
 const TOTAL_COLUMNS = 5;
 const COLUMN_START_X = 240;
 
-const drawColumns = ({
-  ctx,
-  columnBgRef,
-  columTopRef,
-  columBottomRef,
-}: Params) => {
+const drawColumns = ({ ctx, columnBgRef, columTopRef, columBottomRef }: Params): void => {
   if (columnBgRef.current && columTopRef.current && columBottomRef.current) {
     for (let i = 0; i < TOTAL_COLUMNS; i += 1) {
       const offset = i > 0 ? 5 : 0;
       ctx.drawImage(
         columnBgRef.current,
         COLUMN_START_X + columnBgRef.current.width * i - offset * i,
-        50
+        50,
       );
       ctx.drawImage(
         columTopRef.current,
         COLUMN_START_X + columnBgRef.current.width * i - offset * i,
-        30
+        30,
       );
       ctx.drawImage(
         columBottomRef.current,
         COLUMN_START_X + columnBgRef.current.width * i - offset * i,
-        columnBgRef.current.height + 15
+        columnBgRef.current.height + 15,
       );
     }
   }

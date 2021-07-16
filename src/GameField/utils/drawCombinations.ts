@@ -1,7 +1,7 @@
-import { MutableRefObject } from "react";
-import forEach from "lodash/forEach";
+import { MutableRefObject } from 'react';
+import forEach from 'lodash/forEach';
 
-import CombinationInfo from "types/CombinationInfo";
+import CombinationInfo from 'types/CombinationInfo';
 
 interface DrawCombination {
   ctx: CanvasRenderingContext2D;
@@ -22,7 +22,7 @@ export const drawCombination = ({
 }: DrawCombination): void => {
   if (yellowCircleRef.current) {
     ctx.drawImage(yellowCircleRef.current, ...circleCoordinates);
-    ctx.font = "16px serif";
+    ctx.font = '16px serif';
     ctx.fillText(title, ...titleCoordinates);
     ctx.beginPath();
     lineCoordinates.forEach(([x, y], index) => {
@@ -31,7 +31,7 @@ export const drawCombination = ({
       }
       ctx.lineTo(x, y);
     });
-    ctx.strokeStyle = "#feffd4";
+    ctx.strokeStyle = '#feffd4';
     ctx.lineWidth = 6;
     ctx.stroke();
   }
@@ -45,20 +45,10 @@ interface Params {
   yellowCircleRef: MutableRefObject<HTMLImageElement | null>;
 }
 
-const drawCombinations = ({
-  ctx,
-  combinationsHover,
-  yellowCircleRef,
-}: Params): void => {
+const drawCombinations = ({ ctx, combinationsHover, yellowCircleRef }: Params): void => {
   forEach(
     combinationsHover.current,
-    ({
-      hover,
-      title,
-      circleCoordinates,
-      titleCoordinates,
-      lineCoordinates,
-    }) => {
+    ({ hover, title, circleCoordinates, titleCoordinates, lineCoordinates }) => {
       if (hover) {
         drawCombination({
           ctx,
@@ -69,7 +59,7 @@ const drawCombinations = ({
           lineCoordinates,
         });
       }
-    }
+    },
   );
 };
 

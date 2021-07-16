@@ -1,19 +1,18 @@
-import { MutableRefObject } from "react";
-import map from "lodash/map";
+import { MutableRefObject } from 'react';
+import map from 'lodash/map';
 
-import combinationsData, {
+import Slot from 'types/Slot';
+import {
+  combinationsData,
   symbolPayoutValue,
   WILD_SYMBOL,
   PRINCES_SYMBOL,
-} from "../data/combinationsData";
-import Slot from "types/Slot";
+} from '../data/combinationsData';
 
 const getVisibleElementsAfterSpin = (
-  columns: MutableRefObject<MutableRefObject<Slot[]>[]>
+  columns: MutableRefObject<MutableRefObject<Slot[]>[]>,
 ): Slot[][] =>
-  columns.current.map((column) =>
-    column.current.filter((item) => item.isUsedToCalculateWin)
-  );
+  columns.current.map((column) => column.current.filter((item) => item.isUsedToCalculateWin));
 
 const getElementsOfCurrentCombination = (data: Slot[]): string[] => {
   const [firstElement, ...rest] = data;
@@ -24,18 +23,20 @@ const getElementsOfCurrentCombination = (data: Slot[]): string[] => {
       const lastElement = acc[acc.length - 1];
       if (lastElement === cur || lastElement === WILD_SYMBOL) {
         return [...acc, cur];
-      } else if (cur === WILD_SYMBOL) {
+      }
+      if (cur === WILD_SYMBOL) {
         return [...acc, lastElement];
       }
-      return [...acc, "BREAK"];
+
+      return [...acc, 'BREAK'];
     },
-    [firstElement.value]
+    [firstElement.value],
   );
 
   const result: string[] = [];
 
-  for (let item of combinationRow) {
-    if (item === "BREAK") {
+  for (const item of combinationRow) {
+    if (item === 'BREAK') {
       break;
     }
     result.push(item);
@@ -46,7 +47,7 @@ const getElementsOfCurrentCombination = (data: Slot[]): string[] => {
 
 const formatCombinationData = (
   data: string[],
-  combinationName: string
+  combinationName: string,
 ): {
   combinationName: string;
   symbolName: string;
@@ -59,9 +60,7 @@ const formatCombinationData = (
   if (data.length === 2) {
     const [first, second] = data;
     if (
-      (first !== second &&
-        first === WILD_SYMBOL &&
-        second === PRINCES_SYMBOL) ||
+      (first !== second && first === WILD_SYMBOL && second === PRINCES_SYMBOL) ||
       (first === PRINCES_SYMBOL && second === WILD_SYMBOL) ||
       [first, second].every((item) => item === PRINCES_SYMBOL)
     ) {
@@ -70,15 +69,16 @@ const formatCombinationData = (
         symbolName: PRINCES_SYMBOL,
         amount: 2,
       };
-    } else if ([first, second].every((item) => item === WILD_SYMBOL)) {
+    }
+    if ([first, second].every((item) => item === WILD_SYMBOL)) {
       return {
         combinationName,
         symbolName: WILD_SYMBOL,
         amount: 2,
       };
-    } else {
-      return null;
     }
+
+    return null;
   }
 
   const symbolName = data.find((item) => item !== WILD_SYMBOL);
@@ -90,6 +90,7 @@ const formatCombinationData = (
       amount: data.length,
     };
   }
+
   return {
     combinationName,
     symbolName,
@@ -99,7 +100,7 @@ const formatCombinationData = (
 
 const calculateWin = (
   columns: MutableRefObject<MutableRefObject<Slot[]>[]>,
-  betLevel: number
+  betLevel: number,
 ): Promise<{
   payouts: {
     payout: number;
@@ -112,20 +113,15 @@ const calculateWin = (
   new Promise((resolve) =>
     setTimeout(() => {
       const visibleElements = getVisibleElementsAfterSpin(columns);
-      const winingCombinations = map(
-        combinationsData,
-        ({ combination }, combinationName) => {
-          const allElementsOnCombinationLine = combination.map(
-            (slotIndex, columnIndex) => visibleElements[columnIndex][slotIndex]
-          );
+      const winingCombinations = map(combinationsData, ({ combination }, combinationName) => {
+        const allElementsOnCombinationLine = combination.map(
+          (slotIndex: number, columnIndex: number) => visibleElements[columnIndex][slotIndex],
+        );
 
-          const result = getElementsOfCurrentCombination(
-            allElementsOnCombinationLine
-          );
+        const result = getElementsOfCurrentCombination(allElementsOnCombinationLine);
 
-          return formatCombinationData(result, combinationName);
-        }
-      ).filter((item) => item !== null) as {
+        return formatCombinationData(result, combinationName);
+      }).filter((item) => item !== null) as {
         combinationName: string;
         symbolName: string;
         amount: number;
@@ -133,6 +129,7 @@ const calculateWin = (
 
       const payouts = winingCombinations.map((item) => {
         const { symbolName, amount } = item;
+
         return {
           ...item,
           payout: symbolPayoutValue[symbolName][amount] * betLevel,
@@ -144,7 +141,7 @@ const calculateWin = (
         payouts,
         totalPayout,
       });
-    }, 700)
+    }, 700),
   );
 
 export default calculateWin;

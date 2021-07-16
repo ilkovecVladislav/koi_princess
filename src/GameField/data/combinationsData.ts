@@ -1,15 +1,15 @@
-import CombinationInfo from "types/CombinationInfo";
+import CombinationInfo from 'types/CombinationInfo';
 
-export const PRINCES_SYMBOL = "princes";
-export const YELLOW_DRAGON_SYMBOL = "yellowDragon";
-export const GREEN_DRAGON_SYMBOL = "greenDragon";
-export const WILD_SYMBOL = "wild";
-export const COINS_SYMBOL = "coins";
-export const A_SYMBOL = "a";
-export const K_SYMBOL = "k";
-export const Q_SYMBOL = "q";
-export const J_SYMBOL = "j";
-export const TEN_SYMBOL = "10";
+export const PRINCES_SYMBOL = 'princes';
+export const YELLOW_DRAGON_SYMBOL = 'yellowDragon';
+export const GREEN_DRAGON_SYMBOL = 'greenDragon';
+export const WILD_SYMBOL = 'wild';
+export const COINS_SYMBOL = 'coins';
+export const A_SYMBOL = 'a';
+export const K_SYMBOL = 'k';
+export const Q_SYMBOL = 'q';
+export const J_SYMBOL = 'j';
+export const TEN_SYMBOL = '10';
 
 export const symbolPayoutValue: {
   [key: string]: {
@@ -78,7 +78,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 120,
     y2: 140,
     hover: false,
-    title: "4",
+    title: '4',
     circleCoordinates: [198, 115, 30, 30],
     titleCoordinates: [209, 135],
     combination: [0, 1, 2, 1, 0],
@@ -94,7 +94,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 160,
     y2: 180,
     hover: false,
-    title: "2",
+    title: '2',
     circleCoordinates: [198, 155, 30, 30],
     titleCoordinates: [209, 175],
     combination: [0, 0, 0, 0, 0],
@@ -109,7 +109,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 200,
     y2: 220,
     hover: false,
-    title: "8",
+    title: '8',
     circleCoordinates: [198, 195, 30, 30],
     titleCoordinates: [209, 215],
     combination: [0, 1, 0, 1, 0],
@@ -127,7 +127,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 260,
     y2: 280,
     hover: false,
-    title: "6",
+    title: '6',
     circleCoordinates: [198, 255, 30, 30],
     titleCoordinates: [209, 275],
     combination: [1, 0, 1, 0, 1],
@@ -145,7 +145,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 300,
     y2: 330,
     hover: false,
-    title: "1",
+    title: '1',
     circleCoordinates: [198, 300, 30, 30],
     titleCoordinates: [209, 320],
     combination: [1, 1, 1, 1, 1],
@@ -160,7 +160,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 340,
     y2: 370,
     hover: false,
-    title: "7",
+    title: '7',
     circleCoordinates: [198, 345, 30, 30],
     titleCoordinates: [209, 365],
     combination: [1, 2, 1, 2, 1],
@@ -178,7 +178,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 390,
     y2: 420,
     hover: false,
-    title: "11",
+    title: '11',
     circleCoordinates: [198, 390, 30, 30],
     titleCoordinates: [206, 410],
     combination: [2, 0, 2, 0, 2],
@@ -196,7 +196,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 450,
     y2: 490,
     hover: false,
-    title: "5",
+    title: '5',
     circleCoordinates: [198, 460, 30, 30],
     titleCoordinates: [209, 480],
     combination: [2, 1, 0, 1, 2],
@@ -212,7 +212,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 510,
     y2: 530,
     hover: false,
-    title: "3",
+    title: '3',
     circleCoordinates: [198, 500, 30, 30],
     titleCoordinates: [209, 520],
     combination: [2, 2, 2, 2, 2],
@@ -227,7 +227,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 550,
     y2: 570,
     hover: false,
-    title: "9",
+    title: '9',
     circleCoordinates: [198, 540, 30, 30],
     titleCoordinates: [209, 560],
     combination: [2, 1, 2, 1, 2],
@@ -246,7 +246,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 120,
     y2: 140,
     hover: false,
-    title: "10",
+    title: '10',
     circleCoordinates: [1153, 115, 30, 30],
     titleCoordinates: [1159, 135],
     combination: [0, 2, 0, 2, 0],
@@ -264,7 +264,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 160,
     y2: 180,
     hover: false,
-    title: "13",
+    title: '13',
     circleCoordinates: [1153, 155, 30, 30],
     titleCoordinates: [1159, 175],
     combination: [2, 1, 1, 1, 0],
@@ -281,7 +281,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 200,
     y2: 220,
     hover: false,
-    title: "16",
+    title: '16',
     circleCoordinates: [1153, 195, 30, 30],
     titleCoordinates: [1159, 215],
     combination: [0, 0, 2, 0, 0],
@@ -299,7 +299,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 260,
     y2: 280,
     hover: false,
-    title: "15",
+    title: '15',
     circleCoordinates: [1153, 255, 30, 30],
     titleCoordinates: [1159, 275],
     combination: [2, 2, 1, 0, 0],
@@ -316,7 +316,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 300,
     y2: 330,
     hover: false,
-    title: "18",
+    title: '18',
     circleCoordinates: [1153, 300, 30, 30],
     titleCoordinates: [1159, 320],
     combination: [1, 2, 1, 0, 1],
@@ -333,7 +333,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 340,
     y2: 370,
     hover: false,
-    title: "19",
+    title: '19',
     circleCoordinates: [1153, 345, 30, 30],
     titleCoordinates: [1159, 365],
     combination: [1, 0, 1, 2, 1],
@@ -350,7 +350,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 390,
     y2: 420,
     hover: false,
-    title: "20",
+    title: '20',
     circleCoordinates: [1153, 390, 30, 30],
     titleCoordinates: [1159, 410],
     combination: [0, 1, 1, 1, 1],
@@ -366,7 +366,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 450,
     y2: 490,
     hover: false,
-    title: "17",
+    title: '17',
     circleCoordinates: [1153, 460, 30, 30],
     titleCoordinates: [1159, 480],
     combination: [2, 2, 0, 2, 2],
@@ -384,7 +384,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 510,
     y2: 530,
     hover: false,
-    title: "12",
+    title: '12',
     circleCoordinates: [1153, 500, 30, 30],
     titleCoordinates: [1159, 520],
     combination: [0, 1, 1, 1, 2],
@@ -401,7 +401,7 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     y1: 550,
     y2: 570,
     hover: false,
-    title: "14",
+    title: '14',
     circleCoordinates: [1153, 540, 30, 30],
     titleCoordinates: [1159, 560],
     combination: [0, 0, 1, 2, 2],
@@ -413,5 +413,3 @@ export const combinationsData: { [key: string]: CombinationInfo } = {
     ],
   },
 };
-
-export default combinationsData;

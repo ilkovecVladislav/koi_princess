@@ -1,15 +1,15 @@
-import { MutableRefObject } from "react";
+import { MutableRefObject } from 'react';
 
-import Slot from "types/Slot";
-import WiningData from "types/WiningData";
-import { drawCombination } from "./drawCombinations";
-import combinationsData from "../data/combinationsData";
+import Slot from 'types/Slot';
+import WiningData from 'types/WiningData';
+import { drawCombination } from './drawCombinations';
+import { combinationsData } from '../data/combinationsData';
 import {
   SYMBOL_HEIGHT_AND_WIDTH,
   START_SYMBOL_X_POSITION,
   DISTANCE_BETWEEN_TWO_SYMBOLS,
   SHOW_WIN_COMBINATION_TIME,
-} from "../constants/common";
+} from '../constants/common';
 
 const easeOutQuad = (t: number): number => t * (2 - t);
 const frameDuration = 1000 / 60;
@@ -33,28 +33,21 @@ export const showTotalWiningInfoBar = ({
   totalWinHideDelay,
 }: AnimateWinInfoBarParams): void => {
   if (infoBarImgRef.current && !isRolling.current && winingDataRef.current) {
-    if (
-      winingDataRef.current.totalPayout > 0 &&
-      totalWinHideDelay.current > 0
-    ) {
+    if (winingDataRef.current.totalPayout > 0 && totalWinHideDelay.current > 0) {
       // draw win coins bar
       ctx.drawImage(infoBarImgRef.current, 545, 550, 280, 60);
       if (frameRef.current !== totalFrames) {
         frameRef.current += 1;
         const progress = easeOutQuad(frameRef.current / totalFrames);
         ctx.save();
-        ctx.font = "bold 20px sans-serif";
-        ctx.fillStyle = "white";
-        ctx.fillText(
-          `${Math.floor(winingDataRef.current.totalPayout * progress)}`,
-          670,
-          585
-        );
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillStyle = 'white';
+        ctx.fillText(`${Math.floor(winingDataRef.current.totalPayout * progress)}`, 670, 585);
         ctx.restore();
       } else if (frameRef.current === totalFrames) {
         ctx.save();
-        ctx.font = "bold 20px sans-serif";
-        ctx.fillStyle = "white";
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillStyle = 'white';
         ctx.fillText(`${winingDataRef.current.totalPayout}`, 670, 585);
         ctx.restore();
         totalWinHideDelay.current -= 1;
@@ -88,12 +81,7 @@ export const showAllWiningCombinations = ({
       if (combinationName) {
         const combination = combinationsData[combinationName];
         if (combination) {
-          const {
-            title,
-            titleCoordinates,
-            lineCoordinates,
-            circleCoordinates,
-          } = combination;
+          const { title, titleCoordinates, lineCoordinates, circleCoordinates } = combination;
           drawCombination({
             ctx,
             title,
@@ -134,13 +122,11 @@ export const showWiningCombination = ({
     totalWinHideDelay.current === 0
   ) {
     const { payouts } = winingDataRef.current;
-    const { combinationName } =
-      payouts[currentShownWinCombinationIndex.current];
+    const { combinationName } = payouts[currentShownWinCombinationIndex.current];
     const combination = combinationsData[combinationName];
     if (payouts.length === 1) {
       if (combination) {
-        const { title, titleCoordinates, lineCoordinates, circleCoordinates } =
-          combination;
+        const { title, titleCoordinates, lineCoordinates, circleCoordinates } = combination;
         drawCombination({
           ctx,
           title,
@@ -155,8 +141,7 @@ export const showWiningCombination = ({
       currentShownWinCombinationIndex.current < payouts.length
     ) {
       if (combination) {
-        const { title, titleCoordinates, lineCoordinates, circleCoordinates } =
-          combination;
+        const { title, titleCoordinates, lineCoordinates, circleCoordinates } = combination;
         drawCombination({
           ctx,
           title,
@@ -204,8 +189,9 @@ export const showAllWiningSlots = ({
     const slotsByCombination: number[][] = winingDataRef.current.payouts.map(
       ({ combinationName, amount }) => {
         const { combination } = combinationsData[combinationName];
+
         return combination.slice(0, amount);
-      }
+      },
     );
     const combinedSlotsByColumns = [[], [], [], [], []];
     for (let i = 0; i < 5; i += 1) {
@@ -218,7 +204,7 @@ export const showAllWiningSlots = ({
       });
     }
     const allVisibleSlots = columns.current.map((column) =>
-      column.current.filter(({ isUsedToCalculateWin }) => isUsedToCalculateWin)
+      column.current.filter(({ isUsedToCalculateWin }) => isUsedToCalculateWin),
     );
 
     combinedSlotsByColumns.forEach((column, columnIndex) => {
@@ -231,11 +217,10 @@ export const showAllWiningSlots = ({
             0,
             SYMBOL_HEIGHT_AND_WIDTH,
             SYMBOL_HEIGHT_AND_WIDTH,
-            START_SYMBOL_X_POSITION +
-              DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex,
+            START_SYMBOL_X_POSITION + DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex,
             slot.y,
             SYMBOL_HEIGHT_AND_WIDTH,
-            SYMBOL_HEIGHT_AND_WIDTH
+            SYMBOL_HEIGHT_AND_WIDTH,
           );
         }
       });
@@ -269,7 +254,7 @@ const showWiningNumber = ({
       slotX,
       slotY,
       40,
-      150
+      150,
     );
   }
 };
@@ -291,23 +276,17 @@ const showCombinationPayout = ({
   slot,
   columnIndex,
 }: ShowCombinationPayout): void => {
-  if (
-    (amount === 2 && columnIndex === 1) ||
-    (amount > 2 && columnIndex === 2)
-  ) {
+  if ((amount === 2 && columnIndex === 1) || (amount > 2 && columnIndex === 2)) {
     if (payout < 10) {
       showWiningNumber({
         ctx,
         winCombinationNumbersRef,
         payout,
         slotY: slot.y + 40,
-        slotX:
-          START_SYMBOL_X_POSITION +
-          DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex +
-          55,
+        slotX: START_SYMBOL_X_POSITION + DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex + 55,
       });
     } else if (payout >= 10 && payout < 100) {
-      const convertedPayout = payout.toString().split("");
+      const convertedPayout = payout.toString().split('');
       convertedPayout.forEach((item, index) => {
         showWiningNumber({
           ctx,
@@ -315,14 +294,11 @@ const showCombinationPayout = ({
           payout: Number(item),
           slotY: slot.y + 40,
           slotX:
-            START_SYMBOL_X_POSITION +
-            DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex +
-            50 +
-            40 * index,
+            START_SYMBOL_X_POSITION + DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex + 50 + 40 * index,
         });
       });
     } else if (payout >= 100 && payout < 1000) {
-      const convertedPayout = payout.toString().split("");
+      const convertedPayout = payout.toString().split('');
       convertedPayout.forEach((item, index) => {
         showWiningNumber({
           ctx,
@@ -330,24 +306,18 @@ const showCombinationPayout = ({
           payout: Number(item),
           slotY: slot.y + 40,
           slotX:
-            START_SYMBOL_X_POSITION +
-            DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex +
-            30 +
-            40 * index,
+            START_SYMBOL_X_POSITION + DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex + 30 + 40 * index,
         });
       });
     } else {
-      const convertedPayout = payout.toString().split("");
+      const convertedPayout = payout.toString().split('');
       convertedPayout.forEach((item, index) => {
         showWiningNumber({
           ctx,
           winCombinationNumbersRef,
           payout: Number(item),
           slotY: slot.y + 40,
-          slotX:
-            START_SYMBOL_X_POSITION +
-            DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex +
-            40 * index,
+          slotX: START_SYMBOL_X_POSITION + DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex + 40 * index,
         });
       });
     }
@@ -380,14 +350,13 @@ export const showWiningCombinationSlots = ({
     totalWinHideDelay.current === 0
   ) {
     const { payouts } = winingDataRef.current;
-    const { combinationName, amount, payout } =
-      payouts[currentShownWinCombinationIndex.current];
+    const { combinationName, amount, payout } = payouts[currentShownWinCombinationIndex.current];
     const { combination } = combinationsData[combinationName];
 
     const winingCombination = combination.slice(0, amount);
 
     const allVisibleSlots = columns.current.map((column) =>
-      column.current.filter(({ isUsedToCalculateWin }) => isUsedToCalculateWin)
+      column.current.filter(({ isUsedToCalculateWin }) => isUsedToCalculateWin),
     );
     winingCombination.forEach((rowIndex, columnIndex) => {
       const slot = allVisibleSlots[columnIndex][rowIndex];
@@ -401,7 +370,7 @@ export const showWiningCombinationSlots = ({
           START_SYMBOL_X_POSITION + DISTANCE_BETWEEN_TWO_SYMBOLS * columnIndex,
           slot.y,
           SYMBOL_HEIGHT_AND_WIDTH,
-          SYMBOL_HEIGHT_AND_WIDTH
+          SYMBOL_HEIGHT_AND_WIDTH,
         );
       }
       showCombinationPayout({

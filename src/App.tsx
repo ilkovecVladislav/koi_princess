@@ -1,11 +1,11 @@
-import GameField from "GameField";
+import { FC } from 'react';
 
-const App = () => (
-  <div>
-    <section className="main">
-      <GameField />
-    </section>
-  </div>
+import GameField from 'GameField';
+
+const App: FC = () => (
+  <section className="main">
+    <GameField />
+  </section>
 );
 
 export default App;

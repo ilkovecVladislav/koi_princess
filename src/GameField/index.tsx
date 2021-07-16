@@ -1,66 +1,60 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-  useLayoutEffect,
-} from "react";
-import forEach from "lodash/forEach";
+import { FC, useEffect, useState, useCallback, useRef, useLayoutEffect, MouseEvent } from 'react';
+import forEach from 'lodash/forEach';
 
-import backgroundImageSrc from "assets/decorative/game-bg.jpg";
-import logoImageSrc from "assets/decorative/logo.png";
-import borderImageSrc from "assets/decorative/border.png";
-import borderTopImageSrc from "assets/decorative/border-top.png";
-import princessImageSrc from "assets/decorative/princess.png";
-import columnImageSrc from "assets/decorative/column-bg.png";
-import columnTopImageSrc from "assets/decorative/column-top.png";
-import columnBottomImageSrc from "assets/decorative/column-bottom.png";
-import yellowCircle from "assets/decorative/yellow-circle.png";
+import backgroundImageSrc from 'assets/decorative/game-bg.jpg';
+import logoImageSrc from 'assets/decorative/logo.png';
+import borderImageSrc from 'assets/decorative/border.png';
+import borderTopImageSrc from 'assets/decorative/border-top.png';
+import princessImageSrc from 'assets/decorative/princess.png';
+import columnImageSrc from 'assets/decorative/column-bg.png';
+import columnTopImageSrc from 'assets/decorative/column-top.png';
+import columnBottomImageSrc from 'assets/decorative/column-bottom.png';
+import yellowCircle from 'assets/decorative/yellow-circle.png';
 
-import aSymbolSrc from "assets/symbols/a.png";
-import coinsSymbolSrc from "assets/symbols/coins.png";
-import greenDragonSymbolSrc from "assets/symbols/green-dragon.png";
-import jSymbolSrc from "assets/symbols/j.png";
-import kSymbolSrc from "assets/symbols/k.png";
-import qSymbolSrc from "assets/symbols/q.png";
-import tenSymbolSrc from "assets/symbols/ten.png";
-import princessSymbolSrc from "assets/symbols/princess.png";
-import wildSymbolSrc from "assets/symbols/wild.png";
-import yellowDragonSymbolSrc from "assets/symbols/yellow-dragon.png";
-import movingASymbolSrc from "assets/symbols/moving-a.png";
-import movingCoinsSymbolSrc from "assets/symbols/moving-coins.png";
-import movingGreenDragonSymbolSrc from "assets/symbols/moving-green-dragon.png";
-import movingJSymbolSrc from "assets/symbols/moving-j.png";
-import movingKSymbolSrc from "assets/symbols/moving-k.png";
-import movingQSymbolSrc from "assets/symbols/moving-q.png";
-import movingTenSymbolSrc from "assets/symbols/moving-ten.png";
-import movingPrincessSymbolSrc from "assets/symbols/moving-princess.png";
-import movingWildSymbolSrc from "assets/symbols/moving-wild.png";
-import movingYellowDragonSymbolSrc from "assets/symbols/moving-yellow-dragon.png";
+import aSymbolSrc from 'assets/symbols/a.png';
+import coinsSymbolSrc from 'assets/symbols/coins.png';
+import greenDragonSymbolSrc from 'assets/symbols/green-dragon.png';
+import jSymbolSrc from 'assets/symbols/j.png';
+import kSymbolSrc from 'assets/symbols/k.png';
+import qSymbolSrc from 'assets/symbols/q.png';
+import tenSymbolSrc from 'assets/symbols/ten.png';
+import princessSymbolSrc from 'assets/symbols/princess.png';
+import wildSymbolSrc from 'assets/symbols/wild.png';
+import yellowDragonSymbolSrc from 'assets/symbols/yellow-dragon.png';
+import movingASymbolSrc from 'assets/symbols/moving-a.png';
+import movingCoinsSymbolSrc from 'assets/symbols/moving-coins.png';
+import movingGreenDragonSymbolSrc from 'assets/symbols/moving-green-dragon.png';
+import movingJSymbolSrc from 'assets/symbols/moving-j.png';
+import movingKSymbolSrc from 'assets/symbols/moving-k.png';
+import movingQSymbolSrc from 'assets/symbols/moving-q.png';
+import movingTenSymbolSrc from 'assets/symbols/moving-ten.png';
+import movingPrincessSymbolSrc from 'assets/symbols/moving-princess.png';
+import movingWildSymbolSrc from 'assets/symbols/moving-wild.png';
+import movingYellowDragonSymbolSrc from 'assets/symbols/moving-yellow-dragon.png';
 
-import spinBtn from "assets/controls/spin-btn.png";
-import spinActiveBtn from "assets/controls/spin-btn-active.png";
-import spinDisabledBtn from "assets/controls/spin-btn-disabled.png";
-import infoBarImageSrc from "assets/controls/infoBar.png";
-import infoBarWithControlsImageSrc from "assets/controls/infoBarWithControls.png";
-import rightAngleBtn from "assets/controls/right-angle-btn.png";
-import rightAngleHoverBtn from "assets/controls/right-angle-btn-hover.png";
-import rightAngleDisabledBtn from "assets/controls/right-angle-btn-disabled.png";
-import leftAngleBtn from "assets/controls/left-angle-btn.png";
-import leftAngleHoverBtn from "assets/controls/left-angle-btn-hover.png";
-import leftAngleDisabledBtn from "assets/controls/left-angle-btn-disabled.png";
-import buttonImg from "assets/controls/button.png";
-import buttonHoverImg from "assets/controls/button-hover.png";
-import buttonDisabledImg from "assets/controls/button-disabled.png";
+import spinBtn from 'assets/controls/spin-btn.png';
+import spinActiveBtn from 'assets/controls/spin-btn-active.png';
+import spinDisabledBtn from 'assets/controls/spin-btn-disabled.png';
+import infoBarImageSrc from 'assets/controls/infoBar.png';
+import infoBarWithControlsImageSrc from 'assets/controls/infoBarWithControls.png';
+import rightAngleBtn from 'assets/controls/right-angle-btn.png';
+import rightAngleHoverBtn from 'assets/controls/right-angle-btn-hover.png';
+import rightAngleDisabledBtn from 'assets/controls/right-angle-btn-disabled.png';
+import leftAngleBtn from 'assets/controls/left-angle-btn.png';
+import leftAngleHoverBtn from 'assets/controls/left-angle-btn-hover.png';
+import leftAngleDisabledBtn from 'assets/controls/left-angle-btn-disabled.png';
+import buttonImg from 'assets/controls/button.png';
+import buttonHoverImg from 'assets/controls/button-hover.png';
+import buttonDisabledImg from 'assets/controls/button-disabled.png';
 
-import greenLineImg from "assets/green-line.png";
-import winCombinationNumbersImage from "assets/win-combination-numbers.png";
-import Slot from "types/Slot";
-import WiningData from "types/WiningData";
-import GameFieldFooter from "./GameFieldFooter";
-import drawCombinations from "./utils/drawCombinations";
-import drawColumns from "./utils/drawColumns";
-import drawSymbols from "./utils/drawSymbols";
+import greenLineImg from 'assets/green-line.png';
+import winCombinationNumbersImage from 'assets/win-combination-numbers.png';
+import Slot from 'types/Slot';
+import WiningData from 'types/WiningData';
+import GameFieldFooter from './GameFieldFooter';
+import drawCombinations from './utils/drawCombinations';
+import drawColumns from './utils/drawColumns';
+import drawSymbols from './utils/drawSymbols';
 import {
   drawSpinButton,
   drawBetValueInfoBar,
@@ -70,28 +64,29 @@ import {
   drawCoinValueInfoBar,
   drawCoinValueInfoBarControls,
   drawNumberOfCoinsInfoBar,
-} from "./utils/drawControls";
+} from './utils/drawControls';
 import {
   showTotalWiningInfoBar,
   showAllWiningCombinations,
   showAllWiningSlots,
   showWiningCombination,
   showWiningCombinationSlots,
-} from "./utils/animateWin";
+} from './utils/animateWin';
 import {
   drawBackground,
   drawLogo,
   drawPrincess,
   drawGameFieldBorders,
-} from "./utils/drawDecorativeElements";
+} from './utils/drawDecorativeElements';
 import {
   generateColumnSlots,
   loadImage,
   calculateBet,
   handleRolling,
   handleSpinClicked,
-} from "./utils/base";
-import combinationsData, {
+} from './utils/base';
+import {
+  combinationsData,
   A_SYMBOL,
   COINS_SYMBOL,
   GREEN_DRAGON_SYMBOL,
@@ -102,14 +97,14 @@ import combinationsData, {
   TEN_SYMBOL,
   WILD_SYMBOL,
   YELLOW_DRAGON_SYMBOL,
-} from "./data/combinationsData";
+} from './data/combinationsData';
 import {
   COIN_VALUES,
   TOTAL_WIN_HIDE_DELAY,
   SHOW_WIN_COMBINATION_TIME,
   MAX_BET_LEVEL,
   MIN_BET_LEVEL,
-} from "./constants/common";
+} from './constants/common';
 import {
   SPIN_BUTTON,
   MAX_BET_BUTTON,
@@ -117,10 +112,10 @@ import {
   BET_LEVEL_RIGHT_BUTTON,
   COIN_VALUE_LEFT_BUTTON,
   COIN_VALUE_RIGHT_BUTTON,
-} from "./constants/controlsCoordinates";
-import "./styles.css";
+} from './constants/controlsCoordinates';
+import './styles.css';
 
-const GameField = () => {
+const GameField: FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -231,13 +226,7 @@ const GameField = () => {
   const thirdColumn = useRef<Slot[]>([]);
   const fourthColumn = useRef<Slot[]>([]);
   const fifthColumn = useRef<Slot[]>([]);
-  const columns = useRef([
-    firstColumn,
-    secondColumn,
-    thirdColumn,
-    fourthColumn,
-    fifthColumn,
-  ]);
+  const columns = useRef([firstColumn, secondColumn, thirdColumn, fourthColumn, fifthColumn]);
 
   const [cash, setCash] = useState(5000);
   const [win, setWin] = useState(0);
@@ -392,7 +381,7 @@ const GameField = () => {
 
   useLayoutEffect(() => {
     if (canvasRef.current) {
-      ctxRef.current = canvasRef.current.getContext("2d");
+      ctxRef.current = canvasRef.current.getContext('2d');
 
       loadImage(backgroundImageSrc, backgroundRef);
       loadImage(logoImageSrc, logoRef);
@@ -448,65 +437,19 @@ const GameField = () => {
     }
   }, [draw]);
 
-  const handleClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const rect = canvasRef.current!.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+  const handleClick = (event: MouseEvent<HTMLCanvasElement>) => {
+    if (canvasRef.current) {
+      const rect = canvasRef.current.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
 
-    // spin btn
-    const radius = SPIN_BUTTON.h / 2;
-    const cx = SPIN_BUTTON.x + radius;
-    const cy = SPIN_BUTTON.y + radius;
-    const dx = cx - x;
-    const dy = cy - y;
-    if (dx * dx + dy * dy <= radius * radius) {
-      handleSpinClicked({
-        columns,
-        betLevelRef,
-        totalWinHideDelay,
-        currentShownWinCombinationIndex,
-        showWinCombinationTime,
-        frameRef,
-        coinValueRef,
-        winingDataRef,
-        isRolling,
-        setWin,
-        setCash,
-      });
-    }
-
-    // left bet level btn
-    if (
-      x >= BET_LEVEL_LEFT_BUTTON.x &&
-      x <= BET_LEVEL_LEFT_BUTTON.x + BET_LEVEL_LEFT_BUTTON.w &&
-      y >= BET_LEVEL_LEFT_BUTTON.y &&
-      y <= BET_LEVEL_LEFT_BUTTON.y + BET_LEVEL_LEFT_BUTTON.h &&
-      betLevelRef.current > MIN_BET_LEVEL
-    ) {
-      setBetLevel((prevValue) => prevValue - 1);
-    }
-
-    // right bet level btn
-    if (
-      x >= BET_LEVEL_RIGHT_BUTTON.x &&
-      x <= BET_LEVEL_RIGHT_BUTTON.x + BET_LEVEL_RIGHT_BUTTON.w &&
-      y >= BET_LEVEL_RIGHT_BUTTON.y &&
-      y <= BET_LEVEL_RIGHT_BUTTON.y + BET_LEVEL_RIGHT_BUTTON.h &&
-      betLevelRef.current < MAX_BET_LEVEL
-    ) {
-      setBetLevel((prevValue) => prevValue + 1);
-    }
-
-    // max bet btn
-    if (
-      x >= MAX_BET_BUTTON.x &&
-      x <= MAX_BET_BUTTON.x + MAX_BET_BUTTON.w &&
-      y >= MAX_BET_BUTTON.y &&
-      y <= MAX_BET_BUTTON.y + MAX_BET_BUTTON.h
-    ) {
-      if (betLevelRef.current !== MAX_BET_LEVEL) {
-        setBetLevel(MAX_BET_LEVEL);
-      } else if (!isRolling.current) {
+      // spin btn
+      const radius = SPIN_BUTTON.h / 2;
+      const cx = SPIN_BUTTON.x + radius;
+      const cy = SPIN_BUTTON.y + radius;
+      const dx = cx - x;
+      const dy = cy - y;
+      if (dx * dx + dy * dy <= radius * radius) {
         handleSpinClicked({
           columns,
           betLevelRef,
@@ -521,120 +464,170 @@ const GameField = () => {
           setCash,
         });
       }
-    }
 
-    // left coin value btn
-    if (
-      x >= COIN_VALUE_LEFT_BUTTON.x &&
-      x <= COIN_VALUE_LEFT_BUTTON.x + COIN_VALUE_LEFT_BUTTON.w &&
-      y >= COIN_VALUE_LEFT_BUTTON.y &&
-      y <= COIN_VALUE_LEFT_BUTTON.y + COIN_VALUE_LEFT_BUTTON.h &&
-      coinValueRef.current > 0
-    ) {
-      setCoinValue((prevValue) => prevValue - 1);
-    }
+      // left bet level btn
+      if (
+        x >= BET_LEVEL_LEFT_BUTTON.x &&
+        x <= BET_LEVEL_LEFT_BUTTON.x + BET_LEVEL_LEFT_BUTTON.w &&
+        y >= BET_LEVEL_LEFT_BUTTON.y &&
+        y <= BET_LEVEL_LEFT_BUTTON.y + BET_LEVEL_LEFT_BUTTON.h &&
+        betLevelRef.current > MIN_BET_LEVEL
+      ) {
+        setBetLevel((prevValue) => prevValue - 1);
+      }
 
-    // right coin value btn
-    if (
-      x >= COIN_VALUE_RIGHT_BUTTON.x &&
-      x <= COIN_VALUE_RIGHT_BUTTON.x + COIN_VALUE_RIGHT_BUTTON.w &&
-      y >= COIN_VALUE_RIGHT_BUTTON.y &&
-      y <= COIN_VALUE_RIGHT_BUTTON.y + COIN_VALUE_RIGHT_BUTTON.h &&
-      coinValueRef.current < COIN_VALUES.length - 1
-    ) {
-      setCoinValue((prevValue) => prevValue + 1);
+      // right bet level btn
+      if (
+        x >= BET_LEVEL_RIGHT_BUTTON.x &&
+        x <= BET_LEVEL_RIGHT_BUTTON.x + BET_LEVEL_RIGHT_BUTTON.w &&
+        y >= BET_LEVEL_RIGHT_BUTTON.y &&
+        y <= BET_LEVEL_RIGHT_BUTTON.y + BET_LEVEL_RIGHT_BUTTON.h &&
+        betLevelRef.current < MAX_BET_LEVEL
+      ) {
+        setBetLevel((prevValue) => prevValue + 1);
+      }
+
+      // max bet btn
+      if (
+        x >= MAX_BET_BUTTON.x &&
+        x <= MAX_BET_BUTTON.x + MAX_BET_BUTTON.w &&
+        y >= MAX_BET_BUTTON.y &&
+        y <= MAX_BET_BUTTON.y + MAX_BET_BUTTON.h
+      ) {
+        if (betLevelRef.current !== MAX_BET_LEVEL) {
+          setBetLevel(MAX_BET_LEVEL);
+        } else if (!isRolling.current) {
+          handleSpinClicked({
+            columns,
+            betLevelRef,
+            totalWinHideDelay,
+            currentShownWinCombinationIndex,
+            showWinCombinationTime,
+            frameRef,
+            coinValueRef,
+            winingDataRef,
+            isRolling,
+            setWin,
+            setCash,
+          });
+        }
+      }
+
+      // left coin value btn
+      if (
+        x >= COIN_VALUE_LEFT_BUTTON.x &&
+        x <= COIN_VALUE_LEFT_BUTTON.x + COIN_VALUE_LEFT_BUTTON.w &&
+        y >= COIN_VALUE_LEFT_BUTTON.y &&
+        y <= COIN_VALUE_LEFT_BUTTON.y + COIN_VALUE_LEFT_BUTTON.h &&
+        coinValueRef.current > 0
+      ) {
+        setCoinValue((prevValue) => prevValue - 1);
+      }
+
+      // right coin value btn
+      if (
+        x >= COIN_VALUE_RIGHT_BUTTON.x &&
+        x <= COIN_VALUE_RIGHT_BUTTON.x + COIN_VALUE_RIGHT_BUTTON.w &&
+        y >= COIN_VALUE_RIGHT_BUTTON.y &&
+        y <= COIN_VALUE_RIGHT_BUTTON.y + COIN_VALUE_RIGHT_BUTTON.h &&
+        coinValueRef.current < COIN_VALUES.length - 1
+      ) {
+        setCoinValue((prevValue) => prevValue + 1);
+      }
     }
   };
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const rect = canvasRef.current!.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+  const handleMouseMove = (event: MouseEvent<HTMLCanvasElement>) => {
+    if (canvasRef.current) {
+      const rect = canvasRef.current.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
 
-    // spin btn
-    const radius = SPIN_BUTTON.h / 2;
-    const cx = SPIN_BUTTON.x + radius;
-    const cy = SPIN_BUTTON.y + radius;
-    const dx = cx - x;
-    const dy = cy - y;
-    if (dx * dx + dy * dy <= radius * radius) {
-      isControlsHover.current.spinButton = true;
-    } else {
-      isControlsHover.current.spinButton = false;
-    }
-
-    // left bet level btn
-    if (
-      x >= BET_LEVEL_LEFT_BUTTON.x &&
-      x <= BET_LEVEL_LEFT_BUTTON.x + BET_LEVEL_LEFT_BUTTON.w &&
-      y >= BET_LEVEL_LEFT_BUTTON.y &&
-      y <= BET_LEVEL_LEFT_BUTTON.y + BET_LEVEL_LEFT_BUTTON.h &&
-      betLevelRef.current > MIN_BET_LEVEL
-    ) {
-      isControlsHover.current.betLevelRefLeftBtn = true;
-    } else {
-      isControlsHover.current.betLevelRefLeftBtn = false;
-    }
-
-    // right bet level btn
-    if (
-      x >= BET_LEVEL_RIGHT_BUTTON.x &&
-      x <= BET_LEVEL_RIGHT_BUTTON.x + BET_LEVEL_RIGHT_BUTTON.w &&
-      y >= BET_LEVEL_RIGHT_BUTTON.y &&
-      y <= BET_LEVEL_RIGHT_BUTTON.y + BET_LEVEL_RIGHT_BUTTON.h &&
-      betLevelRef.current < MAX_BET_LEVEL
-    ) {
-      isControlsHover.current.betLevelRefRightBtn = true;
-    } else {
-      isControlsHover.current.betLevelRefRightBtn = false;
-    }
-
-    // max bet btn
-    if (
-      x >= MAX_BET_BUTTON.x &&
-      x <= MAX_BET_BUTTON.x + MAX_BET_BUTTON.w &&
-      y >= MAX_BET_BUTTON.y &&
-      y <= MAX_BET_BUTTON.y + MAX_BET_BUTTON.h
-    ) {
-      isControlsHover.current.maxBetBtn = true;
-    } else {
-      isControlsHover.current.maxBetBtn = false;
-    }
-
-    // left coin value btn
-    if (
-      x >= COIN_VALUE_LEFT_BUTTON.x &&
-      x <= COIN_VALUE_LEFT_BUTTON.x + COIN_VALUE_LEFT_BUTTON.w &&
-      y >= COIN_VALUE_LEFT_BUTTON.y &&
-      y <= COIN_VALUE_LEFT_BUTTON.y + COIN_VALUE_LEFT_BUTTON.h &&
-      coinValueRef.current > 0
-    ) {
-      isControlsHover.current.coinValueRefLeftBtn = true;
-    } else {
-      isControlsHover.current.coinValueRefLeftBtn = false;
-    }
-
-    // right coin value btn
-    if (
-      x >= COIN_VALUE_RIGHT_BUTTON.x &&
-      x <= COIN_VALUE_RIGHT_BUTTON.x + COIN_VALUE_RIGHT_BUTTON.w &&
-      y >= COIN_VALUE_RIGHT_BUTTON.y &&
-      y <= COIN_VALUE_RIGHT_BUTTON.y + COIN_VALUE_RIGHT_BUTTON.h &&
-      coinValueRef.current < COIN_VALUES.length - 1
-    ) {
-      isControlsHover.current.coinValueRefRightBtn = true;
-    } else {
-      isControlsHover.current.coinValueRefRightBtn = false;
-    }
-
-    // draw win combinations on hover
-    forEach(combinationsHover.current, ({ x1, x2, y1, y2 }, key) => {
-      if (x >= x1 && x <= x2 && y >= y1 && y <= y2) {
-        combinationsHover.current[key].hover = true;
+      // spin btn
+      const radius = SPIN_BUTTON.h / 2;
+      const cx = SPIN_BUTTON.x + radius;
+      const cy = SPIN_BUTTON.y + radius;
+      const dx = cx - x;
+      const dy = cy - y;
+      if (dx * dx + dy * dy <= radius * radius) {
+        isControlsHover.current.spinButton = true;
       } else {
-        combinationsHover.current[key].hover = false;
+        isControlsHover.current.spinButton = false;
       }
-    });
+
+      // left bet level btn
+      if (
+        x >= BET_LEVEL_LEFT_BUTTON.x &&
+        x <= BET_LEVEL_LEFT_BUTTON.x + BET_LEVEL_LEFT_BUTTON.w &&
+        y >= BET_LEVEL_LEFT_BUTTON.y &&
+        y <= BET_LEVEL_LEFT_BUTTON.y + BET_LEVEL_LEFT_BUTTON.h &&
+        betLevelRef.current > MIN_BET_LEVEL
+      ) {
+        isControlsHover.current.betLevelRefLeftBtn = true;
+      } else {
+        isControlsHover.current.betLevelRefLeftBtn = false;
+      }
+
+      // right bet level btn
+      if (
+        x >= BET_LEVEL_RIGHT_BUTTON.x &&
+        x <= BET_LEVEL_RIGHT_BUTTON.x + BET_LEVEL_RIGHT_BUTTON.w &&
+        y >= BET_LEVEL_RIGHT_BUTTON.y &&
+        y <= BET_LEVEL_RIGHT_BUTTON.y + BET_LEVEL_RIGHT_BUTTON.h &&
+        betLevelRef.current < MAX_BET_LEVEL
+      ) {
+        isControlsHover.current.betLevelRefRightBtn = true;
+      } else {
+        isControlsHover.current.betLevelRefRightBtn = false;
+      }
+
+      // max bet btn
+      if (
+        x >= MAX_BET_BUTTON.x &&
+        x <= MAX_BET_BUTTON.x + MAX_BET_BUTTON.w &&
+        y >= MAX_BET_BUTTON.y &&
+        y <= MAX_BET_BUTTON.y + MAX_BET_BUTTON.h
+      ) {
+        isControlsHover.current.maxBetBtn = true;
+      } else {
+        isControlsHover.current.maxBetBtn = false;
+      }
+
+      // left coin value btn
+      if (
+        x >= COIN_VALUE_LEFT_BUTTON.x &&
+        x <= COIN_VALUE_LEFT_BUTTON.x + COIN_VALUE_LEFT_BUTTON.w &&
+        y >= COIN_VALUE_LEFT_BUTTON.y &&
+        y <= COIN_VALUE_LEFT_BUTTON.y + COIN_VALUE_LEFT_BUTTON.h &&
+        coinValueRef.current > 0
+      ) {
+        isControlsHover.current.coinValueRefLeftBtn = true;
+      } else {
+        isControlsHover.current.coinValueRefLeftBtn = false;
+      }
+
+      // right coin value btn
+      if (
+        x >= COIN_VALUE_RIGHT_BUTTON.x &&
+        x <= COIN_VALUE_RIGHT_BUTTON.x + COIN_VALUE_RIGHT_BUTTON.w &&
+        y >= COIN_VALUE_RIGHT_BUTTON.y &&
+        y <= COIN_VALUE_RIGHT_BUTTON.y + COIN_VALUE_RIGHT_BUTTON.h &&
+        coinValueRef.current < COIN_VALUES.length - 1
+      ) {
+        isControlsHover.current.coinValueRefRightBtn = true;
+      } else {
+        isControlsHover.current.coinValueRefRightBtn = false;
+      }
+
+      // draw win combinations on hover
+      forEach(combinationsHover.current, ({ x1, x2, y1, y2 }, key) => {
+        if (x >= x1 && x <= x2 && y >= y1 && y <= y2) {
+          combinationsHover.current[key].hover = true;
+        } else {
+          combinationsHover.current[key].hover = false;
+        }
+      });
+    }
   };
 
   const betValueInCash = calculateBet(betLevel, coinValue);
@@ -647,7 +640,7 @@ const GameField = () => {
         ref={canvasRef}
         onClick={handleClick}
         onPointerMove={handleMouseMove}
-      ></canvas>
+      />
       <GameFieldFooter cash={cash} win={win} betValueInCash={betValueInCash} />
     </div>
   );

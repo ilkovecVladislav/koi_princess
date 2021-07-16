@@ -1,12 +1,12 @@
-import { MutableRefObject } from "react";
+import { MutableRefObject } from 'react';
 
-export interface Symbol {
+export interface SlotSymbol {
   ref: MutableRefObject<HTMLImageElement | null>;
   movingSymbolRef: MutableRefObject<HTMLImageElement | null>;
   value: string;
 }
 
-interface Slot extends Symbol {
+interface Slot extends SlotSymbol {
   y: number;
   h: number;
   offset: number;

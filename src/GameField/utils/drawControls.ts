@@ -1,11 +1,6 @@
-import { MutableRefObject } from "react";
+import { MutableRefObject } from 'react';
 
-import {
-  BASE_BET_VALUE,
-  COIN_VALUES,
-  MAX_BET_LEVEL,
-  MIN_BET_LEVEL,
-} from "../constants/common";
+import { BASE_BET_VALUE, COIN_VALUES, MAX_BET_LEVEL, MIN_BET_LEVEL } from '../constants/common';
 import {
   SPIN_BUTTON,
   MAX_BET_BUTTON,
@@ -13,7 +8,7 @@ import {
   BET_LEVEL_RIGHT_BUTTON,
   COIN_VALUE_LEFT_BUTTON,
   COIN_VALUE_RIGHT_BUTTON,
-} from "../constants/controlsCoordinates";
+} from '../constants/controlsCoordinates';
 
 interface DrawImageParams {
   ctx: CanvasRenderingContext2D;
@@ -52,11 +47,7 @@ export const drawSpinButton = ({
       imageRef: spinBtnRef,
       params: [SPIN_BUTTON.x, SPIN_BUTTON.y, SPIN_BUTTON.w, SPIN_BUTTON.h],
     });
-  } else if (
-    spinActiveBtnRef.current &&
-    !isRolling.current &&
-    isControlsHover.current.spinButton
-  ) {
+  } else if (spinActiveBtnRef.current && !isRolling.current && isControlsHover.current.spinButton) {
     drawImage({
       ctx,
       imageRef: spinActiveBtnRef,
@@ -77,22 +68,18 @@ interface BetValueParams {
   betLevelRef: MutableRefObject<number>;
 }
 
-export const drawBetValueInfoBar = ({
-  ctx,
-  infoBarImgRef,
-  betLevelRef,
-}: BetValueParams): void => {
+export const drawBetValueInfoBar = ({ ctx, infoBarImgRef, betLevelRef }: BetValueParams): void => {
   if (infoBarImgRef.current) {
     ctx.drawImage(infoBarImgRef.current, 280, 634, 100, 45);
     ctx.save();
-    ctx.font = "bold 14px serif";
-    ctx.fillStyle = "white";
+    ctx.font = 'bold 14px serif';
+    ctx.fillStyle = 'white';
     const textX = betLevelRef.current >= 5 ? 320 : 323;
     ctx.fillText(`${BASE_BET_VALUE * betLevelRef.current}`, textX, 660);
     ctx.restore();
     ctx.save();
-    ctx.font = "12px sans-serif";
-    ctx.fillText("BET", 318, 634);
+    ctx.font = '12px sans-serif';
+    ctx.fillText('BET', 318, 634);
     ctx.restore();
   }
 };
@@ -114,14 +101,14 @@ export const drawBetLevelInfoBar = ({
     ctx.drawImage(infoBarWithControlsImgRef.current, 410, 636, 120, 40);
     ctx.drawImage(greenLineRef.current, 440, 665, 6 * betLevelRef.current, 4);
     ctx.save();
-    ctx.font = "bold 14px serif";
-    ctx.fillStyle = "white";
+    ctx.font = 'bold 14px serif';
+    ctx.fillStyle = 'white';
     const textX = betLevelRef.current === 10 ? 460 : 466;
     ctx.fillText(`${betLevelRef.current}`, textX, 658);
     ctx.restore();
     ctx.save();
-    ctx.font = "12px sans-serif";
-    ctx.fillText("LEVEL", 450, 634);
+    ctx.font = '12px sans-serif';
+    ctx.fillText('LEVEL', 450, 634);
     ctx.restore();
   }
 };
@@ -168,10 +155,7 @@ export const drawBetLevelInfoBarControls = ({
         BET_LEVEL_LEFT_BUTTON.h,
       ],
     });
-  } else if (
-    leftAngleBtnHoverRef.current &&
-    isControlsHover.current.betLevelRefLeftBtn
-  ) {
+  } else if (leftAngleBtnHoverRef.current && isControlsHover.current.betLevelRefLeftBtn) {
     drawImage({
       ctx,
       imageRef: leftAngleBtnHoverRef,
@@ -210,10 +194,7 @@ export const drawBetLevelInfoBarControls = ({
         BET_LEVEL_RIGHT_BUTTON.h,
       ],
     });
-  } else if (
-    rightAngleBtnHoverRef.current &&
-    isControlsHover.current.betLevelRefRightBtn
-  ) {
+  } else if (rightAngleBtnHoverRef.current && isControlsHover.current.betLevelRefRightBtn) {
     drawImage({
       ctx,
       imageRef: rightAngleBtnHoverRef,
@@ -261,42 +242,27 @@ export const drawMaxBetButton = ({
     drawImage({
       ctx,
       imageRef: buttonDisabledRef,
-      params: [
-        MAX_BET_BUTTON.x,
-        MAX_BET_BUTTON.y,
-        MAX_BET_BUTTON.w,
-        MAX_BET_BUTTON.h,
-      ],
+      params: [MAX_BET_BUTTON.x, MAX_BET_BUTTON.y, MAX_BET_BUTTON.w, MAX_BET_BUTTON.h],
     });
   } else if (buttonHoverRef.current && isControlsHover.current.maxBetBtn) {
     drawImage({
       ctx,
       imageRef: buttonHoverRef,
-      params: [
-        MAX_BET_BUTTON.x,
-        MAX_BET_BUTTON.y,
-        MAX_BET_BUTTON.w,
-        MAX_BET_BUTTON.h,
-      ],
+      params: [MAX_BET_BUTTON.x, MAX_BET_BUTTON.y, MAX_BET_BUTTON.w, MAX_BET_BUTTON.h],
     });
   } else if (buttonRef.current) {
     drawImage({
       ctx,
       imageRef: buttonRef,
-      params: [
-        MAX_BET_BUTTON.x,
-        MAX_BET_BUTTON.y,
-        MAX_BET_BUTTON.w,
-        MAX_BET_BUTTON.h,
-      ],
+      params: [MAX_BET_BUTTON.x, MAX_BET_BUTTON.y, MAX_BET_BUTTON.w, MAX_BET_BUTTON.h],
     });
   }
 
   ctx.save();
-  ctx.font = "12px sans-serif";
-  ctx.fillStyle = "white";
-  ctx.fillText("MAX", 790, 652);
-  ctx.fillText("BET", 792, 667);
+  ctx.font = '12px sans-serif';
+  ctx.fillStyle = 'white';
+  ctx.fillText('MAX', 790, 652);
+  ctx.fillText('BET', 792, 667);
   ctx.restore();
 };
 
@@ -315,16 +281,10 @@ export const drawCoinValueInfoBar = ({
 }: CoinValueInfoBarParams): void => {
   if (infoBarWithControlsImgRef.current && greenLineRef.current) {
     ctx.drawImage(infoBarWithControlsImgRef.current, 880, 635, 100, 40);
-    ctx.drawImage(
-      greenLineRef.current,
-      910,
-      664,
-      5.7 * (coinValueRef.current + 1),
-      4
-    );
+    ctx.drawImage(greenLineRef.current, 910, 664, 5.7 * (coinValueRef.current + 1), 4);
     ctx.save();
-    ctx.font = "bold 14px serif";
-    ctx.fillStyle = "white";
+    ctx.font = 'bold 14px serif';
+    ctx.fillStyle = 'white';
     let titleX = 927;
     if (coinValueRef.current >= 0 && coinValueRef.current <= 2) {
       titleX = 918;
@@ -334,8 +294,8 @@ export const drawCoinValueInfoBar = ({
     ctx.fillText(`${COIN_VALUES[coinValueRef.current]}`, titleX, 658);
     ctx.restore();
     ctx.save();
-    ctx.font = "12px sans-serif";
-    ctx.fillText("COIN VALUE", 892, 633);
+    ctx.font = '12px sans-serif';
+    ctx.fillText('COIN VALUE', 892, 633);
     ctx.restore();
   }
 };
@@ -368,10 +328,7 @@ export const drawCoinValueInfoBarControls = ({
   isControlsHover,
 }: CoinValueInfoBarControlsParams): void => {
   // left coin value btn
-  if (
-    leftAngleBtnDisabledRef.current &&
-    (coinValueRef.current === 0 || isRolling.current)
-  ) {
+  if (leftAngleBtnDisabledRef.current && (coinValueRef.current === 0 || isRolling.current)) {
     drawImage({
       ctx,
       imageRef: leftAngleBtnDisabledRef,
@@ -382,10 +339,7 @@ export const drawCoinValueInfoBarControls = ({
         COIN_VALUE_LEFT_BUTTON.h,
       ],
     });
-  } else if (
-    leftAngleBtnHoverRef.current &&
-    isControlsHover.current.coinValueRefLeftBtn
-  ) {
+  } else if (leftAngleBtnHoverRef.current && isControlsHover.current.coinValueRefLeftBtn) {
     drawImage({
       ctx,
       imageRef: leftAngleBtnHoverRef,
@@ -424,10 +378,7 @@ export const drawCoinValueInfoBarControls = ({
         COIN_VALUE_RIGHT_BUTTON.h,
       ],
     });
-  } else if (
-    rightAngleBtnHoverRef.current &&
-    isControlsHover.current.coinValueRefRightBtn
-  ) {
+  } else if (rightAngleBtnHoverRef.current && isControlsHover.current.coinValueRefRightBtn) {
     drawImage({
       ctx,
       imageRef: rightAngleBtnHoverRef,
@@ -466,16 +417,16 @@ export const drawNumberOfCoinsInfoBar = ({
   if (infoBarImgRef.current) {
     ctx.drawImage(infoBarImgRef.current, 985, 634, 120, 45);
     ctx.save();
-    ctx.font = "bold 14px serif";
-    ctx.fillStyle = "white";
-    const xOffset = numberOfCoinsRef.current.toString().split("");
+    ctx.font = 'bold 14px serif';
+    ctx.fillStyle = 'white';
+    const xOffset = numberOfCoinsRef.current.toString().split('');
     xOffset.shift();
     const titleX = 1040 - xOffset.length * 3.5;
     ctx.fillText(`${numberOfCoinsRef.current}`, titleX, 660);
     ctx.restore();
     ctx.save();
-    ctx.font = "12px sans-serif";
-    ctx.fillText("COINS ", 1025, 634);
+    ctx.font = '12px sans-serif';
+    ctx.fillText('COINS ', 1025, 634);
     ctx.restore();
   }
 };

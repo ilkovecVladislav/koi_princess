@@ -1,9 +1,9 @@
-import { MutableRefObject, SetStateAction } from "react";
-import random from "lodash/random";
+import { MutableRefObject, SetStateAction } from 'react';
+import random from 'lodash/random';
 
-import Slot, { Symbol } from "types/Slot";
-import WiningData from "types/WiningData";
-import calculateWin from "./calculateWin";
+import Slot, { SlotSymbol } from 'types/Slot';
+import WiningData from 'types/WiningData';
+import calculateWin from './calculateWin';
 import {
   BASE_BET_VALUE,
   COIN_VALUES,
@@ -13,7 +13,7 @@ import {
   ROLLING_DISTANCE,
   SHOW_WIN_COMBINATION_TIME,
   TOTAL_WIN_HIDE_DELAY,
-} from "../constants/common";
+} from '../constants/common';
 
 const TOTAL_SLOTS_BY_COLUMN = 12;
 
@@ -30,20 +30,19 @@ export const loadImage = (
 };
 
 export const getRandomSymbol = (
-  symbols: MutableRefObject<Symbol[]>,
-  index?: number
-): Symbol => {
+  symbols: MutableRefObject<SlotSymbol[]>,
+  index?: number,
+): SlotSymbol => {
   const randomValue = random(0, 9);
+
   return symbols.current[index || randomValue];
 };
 
-export const generateColumnSlots = (
-  symbols: MutableRefObject<Symbol[]>
-): Slot[] => {
+export const generateColumnSlots = (symbols: MutableRefObject<SlotSymbol[]>): Slot[] => {
   const result: Slot[] = [];
   for (let i = 0; i < TOTAL_SLOTS_BY_COLUMN; i += 1) {
     const randomSymbol = getRandomSymbol(symbols);
-    let slot = {
+    const slot = {
       ...randomSymbol,
       y: SYMBOL_START_Y + SYMBOL_HEIGHT_AND_WIDTH * i,
       h: SYMBOL_HEIGHT_AND_WIDTH,
@@ -65,10 +64,8 @@ export const generateColumnSlots = (
   return result;
 };
 
-export const calculateBet = (
-  betLevel: number,
-  coinValueIndex: number
-): number => BASE_BET_VALUE * betLevel * COIN_VALUES[coinValueIndex];
+export const calculateBet = (betLevel: number, coinValueIndex: number): number =>
+  BASE_BET_VALUE * betLevel * COIN_VALUES[coinValueIndex];
 
 interface RollingParams {
   currentDistance: MutableRefObject<number>;
@@ -85,13 +82,12 @@ export const handleRolling = ({
   coinValueRef,
   setCash,
   setWin,
-}: RollingParams) => {
+}: RollingParams): void => {
   if (currentDistance.current === ROLLING_DISTANCE && isRolling.current) {
     isRolling.current = false;
     currentDistance.current = 0;
     if (winingDataRef.current && winingDataRef.current.totalPayout > 0) {
-      const payout =
-        winingDataRef.current.totalPayout * COIN_VALUES[coinValueRef.current];
+      const payout = winingDataRef.current.totalPayout * COIN_VALUES[coinValueRef.current];
       setCash((prevValue) => prevValue + payout);
       setWin(payout);
     }

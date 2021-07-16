@@ -1,9 +1,9 @@
-import { FC } from "react";
+import { FC } from 'react';
 
 const FooterItem: FC<{ data: number; title: string }> = ({ data, title }) => (
   <span className="info-text">
-    {title}: &#8364;{" "}
-    {data.toLocaleString("en-IN", {
+    {title}: &#8364;{' '}
+    {data.toLocaleString('en-IN', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}
