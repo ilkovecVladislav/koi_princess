@@ -1,0 +1,12 @@
+export const BASE_BET_VALUE = 20;
+export const COIN_VALUES = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1];
+export const MOVEMENT_SPEED = 20;
+export const SYMBOL_START_Y = 80;
+export const SYMBOL_HEIGHT_AND_WIDTH = 160;
+export const START_SYMBOL_X_POSITION = 250;
+export const DISTANCE_BETWEEN_TWO_SYMBOLS = 180;
+export const TOTAL_WIN_HIDE_DELAY = 100;
+export const SHOW_WIN_COMBINATION_TIME = 80;
+export const ROLLING_DISTANCE = 1920;
+export const MIN_BET_LEVEL = 1;
+export const MAX_BET_LEVEL = 10;

@@ -1,88 +1,266 @@
-import { useEffect, useRef, useLayoutEffect, MutableRefObject } from "react";
-import random from "lodash/random";
-import backgroundImageSrc from "assets/game-bg.jpg";
-import logoImageSrc from "assets/logo.png";
-import princessImageSrc from "assets/princess.png";
-import columnImageSrc from "assets/column-bg.png";
-import SpinBtn from "assets/spin-btn.png";
-import SpinActiveBtn from "assets/spin-btn-active.png";
-import SpinDisabledBtn from "assets/spin-btn-disabled.png";
-import SymbolAImageSrc from "assets/symbols/a.png";
-import SymbolCoinsImageSrc from "assets/symbols/coins.png";
-import SymbolFrogImageSrc from "assets/symbols/frog.png";
-import SymbolJImageSrc from "assets/symbols/j.png";
-import SymbolKImageSrc from "assets/symbols/k.png";
-import SymbolQImageSrc from "assets/symbols/q.png";
-import SymbolTenImageSrc from "assets/symbols/ten.png";
-import SymbolPrincessImageSrc from "assets/symbols/princess.png";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  useLayoutEffect,
+} from "react";
+import forEach from "lodash/forEach";
 
+import backgroundImageSrc from "assets/decorative/game-bg.jpg";
+import logoImageSrc from "assets/decorative/logo.png";
+import borderImageSrc from "assets/decorative/border.png";
+import borderTopImageSrc from "assets/decorative/border-top.png";
+import princessImageSrc from "assets/decorative/princess.png";
+import columnImageSrc from "assets/decorative/column-bg.png";
+import columnTopImageSrc from "assets/decorative/column-top.png";
+import columnBottomImageSrc from "assets/decorative/column-bottom.png";
+import yellowCircle from "assets/decorative/yellow-circle.png";
+
+import aSymbolSrc from "assets/symbols/a.png";
+import coinsSymbolSrc from "assets/symbols/coins.png";
+import greenDragonSymbolSrc from "assets/symbols/green-dragon.png";
+import jSymbolSrc from "assets/symbols/j.png";
+import kSymbolSrc from "assets/symbols/k.png";
+import qSymbolSrc from "assets/symbols/q.png";
+import tenSymbolSrc from "assets/symbols/ten.png";
+import princessSymbolSrc from "assets/symbols/princess.png";
+import wildSymbolSrc from "assets/symbols/wild.png";
+import yellowDragonSymbolSrc from "assets/symbols/yellow-dragon.png";
+import movingASymbolSrc from "assets/symbols/moving-a.png";
+import movingCoinsSymbolSrc from "assets/symbols/moving-coins.png";
+import movingGreenDragonSymbolSrc from "assets/symbols/moving-green-dragon.png";
+import movingJSymbolSrc from "assets/symbols/moving-j.png";
+import movingKSymbolSrc from "assets/symbols/moving-k.png";
+import movingQSymbolSrc from "assets/symbols/moving-q.png";
+import movingTenSymbolSrc from "assets/symbols/moving-ten.png";
+import movingPrincessSymbolSrc from "assets/symbols/moving-princess.png";
+import movingWildSymbolSrc from "assets/symbols/moving-wild.png";
+import movingYellowDragonSymbolSrc from "assets/symbols/moving-yellow-dragon.png";
+
+import spinBtn from "assets/controls/spin-btn.png";
+import spinActiveBtn from "assets/controls/spin-btn-active.png";
+import spinDisabledBtn from "assets/controls/spin-btn-disabled.png";
+import infoBarImageSrc from "assets/controls/infoBar.png";
+import infoBarWithControlsImageSrc from "assets/controls/infoBarWithControls.png";
+import rightAngleBtn from "assets/controls/right-angle-btn.png";
+import rightAngleHoverBtn from "assets/controls/right-angle-btn-hover.png";
+import rightAngleDisabledBtn from "assets/controls/right-angle-btn-disabled.png";
+import leftAngleBtn from "assets/controls/left-angle-btn.png";
+import leftAngleHoverBtn from "assets/controls/left-angle-btn-hover.png";
+import leftAngleDisabledBtn from "assets/controls/left-angle-btn-disabled.png";
+import buttonImg from "assets/controls/button.png";
+import buttonHoverImg from "assets/controls/button-hover.png";
+import buttonDisabledImg from "assets/controls/button-disabled.png";
+
+import greenLineImg from "assets/green-line.png";
+import winCombinationNumbersImage from "assets/win-combination-numbers.png";
+import Slot from "types/Slot";
+import WiningData from "types/WiningData";
+import GameFieldFooter from "./GameFieldFooter";
+import drawCombinations from "./utils/drawCombinations";
+import drawColumns from "./utils/drawColumns";
+import drawSymbols from "./utils/drawSymbols";
+import {
+  drawSpinButton,
+  drawBetValueInfoBar,
+  drawBetLevelInfoBar,
+  drawBetLevelInfoBarControls,
+  drawMaxBetButton,
+  drawCoinValueInfoBar,
+  drawCoinValueInfoBarControls,
+  drawNumberOfCoinsInfoBar,
+} from "./utils/drawControls";
+import {
+  showTotalWiningInfoBar,
+  showAllWiningCombinations,
+  showAllWiningSlots,
+  showWiningCombination,
+  showWiningCombinationSlots,
+} from "./utils/animateWin";
+import {
+  drawBackground,
+  drawLogo,
+  drawPrincess,
+  drawGameFieldBorders,
+} from "./utils/drawDecorativeElements";
+import {
+  generateColumnSlots,
+  loadImage,
+  calculateBet,
+  handleRolling,
+  handleSpinClicked,
+} from "./utils/base";
+import combinationsData, {
+  A_SYMBOL,
+  COINS_SYMBOL,
+  GREEN_DRAGON_SYMBOL,
+  J_SYMBOL,
+  K_SYMBOL,
+  PRINCES_SYMBOL,
+  Q_SYMBOL,
+  TEN_SYMBOL,
+  WILD_SYMBOL,
+  YELLOW_DRAGON_SYMBOL,
+} from "./data/combinationsData";
+import {
+  COIN_VALUES,
+  TOTAL_WIN_HIDE_DELAY,
+  SHOW_WIN_COMBINATION_TIME,
+  MAX_BET_LEVEL,
+  MIN_BET_LEVEL,
+} from "./constants/common";
+import {
+  SPIN_BUTTON,
+  MAX_BET_BUTTON,
+  BET_LEVEL_LEFT_BUTTON,
+  BET_LEVEL_RIGHT_BUTTON,
+  COIN_VALUE_LEFT_BUTTON,
+  COIN_VALUE_RIGHT_BUTTON,
+} from "./constants/controlsCoordinates";
 import "./styles.css";
-
-const loadImage = (
-  src: string,
-  ref: MutableRefObject<HTMLImageElement | null>,
-  ...rest: number[]
-): void => {
-  const image = new Image(...rest);
-  image.onload = () => {
-    ref.current = image;
-  };
-  image.src = src;
-};
 
 const GameField = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+
   const backgroundRef = useRef<HTMLImageElement | null>(null);
   const logoRef = useRef<HTMLImageElement | null>(null);
+  const borderRef = useRef<HTMLImageElement | null>(null);
+  const borderTopRef = useRef<HTMLImageElement | null>(null);
   const princessRef = useRef<HTMLImageElement | null>(null);
   const columnBgRef = useRef<HTMLImageElement | null>(null);
-  const spinBtnRef = useRef<HTMLImageElement | null>(null);
-  const spinActiveBtnRef = useRef<HTMLImageElement | null>(null);
-  const spinDisabledBtnRef = useRef<HTMLImageElement | null>(null);
+  const columTopRef = useRef<HTMLImageElement | null>(null);
+  const columBottomRef = useRef<HTMLImageElement | null>(null);
+  const yellowCircleRef = useRef<HTMLImageElement | null>(null);
+
   const symbolARef = useRef<HTMLImageElement | null>(null);
   const symbolCoinsRef = useRef<HTMLImageElement | null>(null);
-  const symbolFrogRef = useRef<HTMLImageElement | null>(null);
+  const symbolGreenDragonRef = useRef<HTMLImageElement | null>(null);
   const symbolJRef = useRef<HTMLImageElement | null>(null);
   const symbolKRef = useRef<HTMLImageElement | null>(null);
   const symbolQRef = useRef<HTMLImageElement | null>(null);
   const symbolTenRef = useRef<HTMLImageElement | null>(null);
   const symbolPrincessRef = useRef<HTMLImageElement | null>(null);
+  const symbolWildRef = useRef<HTMLImageElement | null>(null);
+  const symbolYellowDragonRef = useRef<HTMLImageElement | null>(null);
+  const movingSymbolARef = useRef<HTMLImageElement | null>(null);
+  const movingSymbolCoinsRef = useRef<HTMLImageElement | null>(null);
+  const movingSymbolGreenDragonRef = useRef<HTMLImageElement | null>(null);
+  const movingSymbolJRef = useRef<HTMLImageElement | null>(null);
+  const movingSymbolKRef = useRef<HTMLImageElement | null>(null);
+  const movingSymbolQRef = useRef<HTMLImageElement | null>(null);
+  const movingSymbolTenRef = useRef<HTMLImageElement | null>(null);
+  const movingSymbolPrincessRef = useRef<HTMLImageElement | null>(null);
+  const movingSymbolWildRef = useRef<HTMLImageElement | null>(null);
+  const movingSymbolYellowDragonRef = useRef<HTMLImageElement | null>(null);
+
+  const spinBtnRef = useRef<HTMLImageElement | null>(null);
+  const spinActiveBtnRef = useRef<HTMLImageElement | null>(null);
+  const spinDisabledBtnRef = useRef<HTMLImageElement | null>(null);
+  const infoBarImgRef = useRef<HTMLImageElement | null>(null);
+  const rightAngleBtnRef = useRef<HTMLImageElement | null>(null);
+  const rightAngleBtnHoverRef = useRef<HTMLImageElement | null>(null);
+  const rightAngleBtnDisabledRef = useRef<HTMLImageElement | null>(null);
+  const leftAngleBtnRef = useRef<HTMLImageElement | null>(null);
+  const leftAngleBtnHoverRef = useRef<HTMLImageElement | null>(null);
+  const leftAngleBtnDisabledRef = useRef<HTMLImageElement | null>(null);
+  const infoBarWithControlsImgRef = useRef<HTMLImageElement | null>(null);
+  const buttonRef = useRef<HTMLImageElement | null>(null);
+  const buttonHoverRef = useRef<HTMLImageElement | null>(null);
+  const buttonDisabledRef = useRef<HTMLImageElement | null>(null);
+
+  const winCombinationNumbersRef = useRef<HTMLImageElement | null>(null);
+  const greenLineRef = useRef<HTMLImageElement | null>(null);
+
   const isRolling = useRef<boolean>(false);
-  const isHover = useRef<{ [key: string]: boolean }>({
+  const winingDataRef = useRef<WiningData | null>(null);
+  const combinationsHover = useRef(combinationsData);
+  const isControlsHover = useRef<{ [key: string]: boolean }>({
     spinButton: false,
+    betLevelRefLeftBtn: false,
+    betLevelRefRightBtn: false,
+    maxBetBtn: false,
+    coinValueRefLeftBtn: false,
+    coinValueRefRightBtn: false,
   });
+  const currentDistance = useRef<number>(0);
+  const frameRef = useRef<number>(0);
+  const totalWinHideDelay = useRef<number>(TOTAL_WIN_HIDE_DELAY);
+  const showWinCombinationTime = useRef<number>(SHOW_WIN_COMBINATION_TIME);
+  const currentShownWinCombinationIndex = useRef<number>(0);
+
   const symbols = useRef([
-    { ref: symbolARef, value: 10 },
-    { ref: symbolCoinsRef, value: 15 },
-    { ref: symbolFrogRef, value: 20 },
-    { ref: symbolJRef, value: 25 },
-    { ref: symbolKRef, value: 30 },
-    { ref: symbolQRef, value: 35 },
-    { ref: symbolTenRef, value: 40 },
-    { ref: symbolPrincessRef, value: 45 },
+    { ref: symbolARef, movingSymbolRef: movingSymbolARef, value: A_SYMBOL },
+    {
+      ref: symbolCoinsRef,
+      movingSymbolRef: movingSymbolCoinsRef,
+      value: COINS_SYMBOL,
+    },
+    {
+      ref: symbolGreenDragonRef,
+      movingSymbolRef: movingSymbolGreenDragonRef,
+      value: GREEN_DRAGON_SYMBOL,
+    },
+    { ref: symbolJRef, movingSymbolRef: movingSymbolJRef, value: J_SYMBOL },
+    { ref: symbolKRef, movingSymbolRef: movingSymbolKRef, value: K_SYMBOL },
+    { ref: symbolQRef, movingSymbolRef: movingSymbolQRef, value: Q_SYMBOL },
+    {
+      ref: symbolTenRef,
+      movingSymbolRef: movingSymbolTenRef,
+      value: TEN_SYMBOL,
+    },
+    {
+      ref: symbolPrincessRef,
+      movingSymbolRef: movingSymbolPrincessRef,
+      value: PRINCES_SYMBOL,
+    },
+    {
+      ref: symbolWildRef,
+      movingSymbolRef: movingSymbolWildRef,
+      value: WILD_SYMBOL,
+    },
+    {
+      ref: symbolYellowDragonRef,
+      movingSymbolRef: movingSymbolYellowDragonRef,
+      value: YELLOW_DRAGON_SYMBOL,
+    },
   ]);
-  const firstColumn = useRef<any[]>([]);
+  const firstColumn = useRef<Slot[]>([]);
+  const secondColumn = useRef<Slot[]>([]);
+  const thirdColumn = useRef<Slot[]>([]);
+  const fourthColumn = useRef<Slot[]>([]);
+  const fifthColumn = useRef<Slot[]>([]);
+  const columns = useRef([
+    firstColumn,
+    secondColumn,
+    thirdColumn,
+    fourthColumn,
+    fifthColumn,
+  ]);
+
+  const [cash, setCash] = useState(5000);
+  const [win, setWin] = useState(0);
+  const [betLevel, setBetLevel] = useState(1);
+  const [coinValue, setCoinValue] = useState(0);
+  const betLevelRef = useRef<number>(betLevel);
+  const coinValueRef = useRef<number>(coinValue);
+  const numberOfCoinsRef = useRef<number>(0);
 
   useEffect(() => {
-    for (let i = 0; i < 12; i += 1) {
-      const randomValue = random(0, 7);
-      const randomSymbol = symbols.current[randomValue];
-      let slot = {
-        ...randomSymbol,
-        y: 70 + 160 * i,
-        h: 160,
-        offset: 0,
-      };
-      if (i > 2) {
-        slot.h = 0;
-      }
+    betLevelRef.current = betLevel;
+    coinValueRef.current = coinValue;
+    numberOfCoinsRef.current = Math.round(cash / COIN_VALUES[coinValue]);
+  }, [betLevel, coinValue, cash]);
 
-      firstColumn.current.push(slot);
-    }
+  useEffect(() => {
+    columns.current.forEach((column) => {
+      const columnSlots = generateColumnSlots(symbols);
+      column.current = columnSlots;
+    });
   }, []);
 
-  const draw = (timestamp: number): void => {
+  const draw = useCallback((): void => {
     if (!ctxRef.current || !canvasRef.current) {
       return;
     }
@@ -90,163 +268,127 @@ const GameField = () => {
     const { current: ctx } = ctxRef;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (backgroundRef.current) {
-      ctx.drawImage(backgroundRef.current, 0, 0);
-    }
+    drawBackground({ ctx, imageRef: backgroundRef });
+    drawPrincess({ ctx, imageRef: princessRef });
+    drawGameFieldBorders({ ctx, borderTopRef, borderRef });
 
-    if (princessRef.current) {
-      const imageWidth = 180;
-      const ratio = princessRef.current.height / princessRef.current.width;
-      ctx.drawImage(
-        princessRef.current,
-        0,
-        150,
-        imageWidth,
-        imageWidth + 130 * ratio
-      );
-    }
+    // call when spin button/max bet was clicked
+    handleRolling({
+      currentDistance,
+      isRolling,
+      winingDataRef,
+      coinValueRef,
+      setCash,
+      setWin,
+    });
 
-    if (columnBgRef.current) {
-      ctx.drawImage(columnBgRef.current, 240, 50);
-      ctx.drawImage(
-        columnBgRef.current,
-        240 + columnBgRef.current.width * 1,
-        50
-      );
-      ctx.drawImage(
-        columnBgRef.current,
-        240 + columnBgRef.current.width * 2,
-        50
-      );
-      ctx.drawImage(
-        columnBgRef.current,
-        240 + columnBgRef.current.width * 3,
-        50
-      );
-      ctx.drawImage(
-        columnBgRef.current,
-        240 + columnBgRef.current.width * 4,
-        50
-      );
-    }
+    drawColumns({ ctx, columnBgRef, columTopRef, columBottomRef });
 
-    if (logoRef.current) {
-      const imageWidth = 500;
-      const ratio = logoRef.current.height / logoRef.current.width;
-      ctx.drawImage(
-        logoRef.current,
-        canvasRef.current.width / 2 - 250,
-        10,
-        imageWidth,
-        imageWidth * ratio
-      );
-    }
+    drawLogo({ ctx, imageRef: logoRef, canvasRef });
 
-    if (symbolCoinsRef.current) {
-      // ctx.drawImage(
-      //   symbolCoinsRef.current,
-      //   0,
-      //   0,
-      //   symbolCoinsRef.current.width,
-      //   symbolCoinsRef.current.height / 2 - 50,
-      //   255,
-      //   300,
-      //   150,
-      //   50
-      // );
-      // distance.current += 1;
-      // if (distance.current > 550) {
-      //   distance.current = 0;
-      // }
-    }
+    drawCombinations({ ctx, combinationsHover, yellowCircleRef });
+    drawSymbols({ ctx, columns, symbols, isRolling, winingDataRef });
 
-    if (firstColumn.current.length >= 0) {
-      firstColumn.current.forEach((item) => {
-        if (item.ref.current) {
-          const ratio = item.ref.current.height / item.ref.current.width;
+    // draw when the player win
+    showAllWiningCombinations({
+      ctx,
+      yellowCircleRef,
+      isRolling,
+      winingDataRef,
+      totalWinHideDelay,
+    });
+    showWiningCombination({
+      ctx,
+      yellowCircleRef,
+      isRolling,
+      winingDataRef,
+      totalWinHideDelay,
+      showWinCombinationTime,
+      currentShownWinCombinationIndex,
+    });
+    showAllWiningSlots({
+      ctx,
+      isRolling,
+      winingDataRef,
+      columns,
+      totalWinHideDelay,
+    });
+    showWiningCombinationSlots({
+      ctx,
+      isRolling,
+      winingDataRef,
+      columns,
+      totalWinHideDelay,
+      currentShownWinCombinationIndex,
+      winCombinationNumbersRef,
+    });
+    showTotalWiningInfoBar({
+      ctx,
+      frameRef,
+      infoBarImgRef,
+      isRolling,
+      winingDataRef,
+      totalWinHideDelay,
+    });
 
-          if (
-            item.ref.current &&
-            isRolling.current &&
-            item.y >= 0 &&
-            item.h < 160
-          ) {
-            ctx.drawImage(
-              item.ref.current,
-              0,
-              item.offset,
-              160,
-              item.h,
-              255,
-              item.y,
-              160,
-              item.h
-            );
-          } else if (item.ref.current && isRolling.current) {
-            ctx.drawImage(
-              item.ref.current,
-              0,
-              0,
-              160,
-              item.h,
-              255,
-              item.y,
-              160,
-              item.h
-            );
-          } else if (item.ref.current && !isRolling.current && item.y < 425) {
-            ctx.drawImage(
-              item.ref.current,
-              0,
-              0,
-              160,
-              160,
-              255,
-              item.y,
-              160,
-              160
-            );
-          }
-
-          if (isRolling.current) {
-            item.y += 1;
-
-            if (item.y > 425) {
-              item.h -= 1;
-            } else if (item.y > 40 && item.h < 160) {
-              item.h += 1;
-              item.offset -= 1;
-            }
-
-            if (item.y >= 1990) {
-              // if (item.y >= 1920) {
-              item.y = 70;
-              item.h = 0;
-              item.offset = 160;
-            }
-          }
-        }
-      });
-    }
-
-    if (
-      spinBtnRef.current &&
-      !isRolling.current &&
-      !isHover.current.spinButton
-    ) {
-      ctx.drawImage(spinBtnRef.current, 665, 620, 70, 70);
-    } else if (
-      spinActiveBtnRef.current &&
-      !isRolling.current &&
-      isHover.current.spinButton
-    ) {
-      ctx.drawImage(spinActiveBtnRef.current, 665, 620, 70, 70);
-    } else if (spinDisabledBtnRef.current && isRolling.current) {
-      ctx.drawImage(spinDisabledBtnRef.current, 665, 620, 70, 70);
-    }
+    // draw controls panel
+    drawSpinButton({
+      ctx,
+      spinBtnRef,
+      isRolling,
+      isControlsHover,
+      spinActiveBtnRef,
+      spinDisabledBtnRef,
+    });
+    drawBetValueInfoBar({ ctx, infoBarImgRef, betLevelRef });
+    drawBetLevelInfoBar({
+      ctx,
+      infoBarWithControlsImgRef,
+      greenLineRef,
+      betLevelRef,
+    });
+    drawBetLevelInfoBarControls({
+      ctx,
+      rightAngleBtnDisabledRef,
+      rightAngleBtnHoverRef,
+      rightAngleBtnRef,
+      leftAngleBtnDisabledRef,
+      leftAngleBtnHoverRef,
+      leftAngleBtnRef,
+      betLevelRef,
+      isRolling,
+      isControlsHover,
+    });
+    drawMaxBetButton({
+      ctx,
+      buttonDisabledRef,
+      buttonHoverRef,
+      buttonRef,
+      isControlsHover,
+      isRolling,
+    });
+    drawCoinValueInfoBar({
+      ctx,
+      greenLineRef,
+      infoBarWithControlsImgRef,
+      coinValueRef,
+    });
+    drawCoinValueInfoBarControls({
+      ctx,
+      rightAngleBtnDisabledRef,
+      rightAngleBtnHoverRef,
+      rightAngleBtnRef,
+      leftAngleBtnDisabledRef,
+      leftAngleBtnHoverRef,
+      leftAngleBtnRef,
+      coinValueRef,
+      isRolling,
+      isControlsHover,
+    });
+    drawNumberOfCoinsInfoBar({ ctx, infoBarImgRef, numberOfCoinsRef });
 
     window.requestAnimationFrame(draw);
-  };
+  }, []);
 
   useLayoutEffect(() => {
     if (canvasRef.current) {
@@ -256,43 +398,151 @@ const GameField = () => {
       loadImage(logoImageSrc, logoRef);
       loadImage(princessImageSrc, princessRef);
       loadImage(columnImageSrc, columnBgRef);
-      loadImage(SymbolAImageSrc, symbolARef);
-      loadImage(SymbolCoinsImageSrc, symbolCoinsRef);
-      loadImage(SymbolFrogImageSrc, symbolFrogRef);
-      loadImage(SymbolFrogImageSrc, symbolFrogRef);
-      loadImage(SymbolJImageSrc, symbolJRef);
-      loadImage(SymbolKImageSrc, symbolKRef);
-      loadImage(SymbolQImageSrc, symbolQRef);
-      loadImage(SymbolTenImageSrc, symbolTenRef);
-      loadImage(SymbolPrincessImageSrc, symbolPrincessRef);
-      loadImage(SpinBtn, spinBtnRef);
-      loadImage(SpinActiveBtn, spinActiveBtnRef);
-      loadImage(SpinDisabledBtn, spinDisabledBtnRef);
 
-      // const dpr = window.devicePixelRatio || 1;
-      // const { width, height } = canvasRef.current.getBoundingClientRect();
+      // base symbols
+      loadImage(aSymbolSrc, symbolARef);
+      loadImage(coinsSymbolSrc, symbolCoinsRef);
+      loadImage(greenDragonSymbolSrc, symbolGreenDragonRef);
+      loadImage(jSymbolSrc, symbolJRef);
+      loadImage(kSymbolSrc, symbolKRef);
+      loadImage(qSymbolSrc, symbolQRef);
+      loadImage(tenSymbolSrc, symbolTenRef);
+      loadImage(princessSymbolSrc, symbolPrincessRef);
+      loadImage(wildSymbolSrc, symbolWildRef);
+      loadImage(yellowDragonSymbolSrc, symbolYellowDragonRef);
+      // moving symbols
+      loadImage(movingASymbolSrc, movingSymbolARef);
+      loadImage(movingCoinsSymbolSrc, movingSymbolCoinsRef);
+      loadImage(movingGreenDragonSymbolSrc, movingSymbolGreenDragonRef);
+      loadImage(movingJSymbolSrc, movingSymbolJRef);
+      loadImage(movingKSymbolSrc, movingSymbolKRef);
+      loadImage(movingQSymbolSrc, movingSymbolQRef);
+      loadImage(movingTenSymbolSrc, movingSymbolTenRef);
+      loadImage(movingPrincessSymbolSrc, movingSymbolPrincessRef);
+      loadImage(movingWildSymbolSrc, movingSymbolWildRef);
+      loadImage(movingYellowDragonSymbolSrc, movingSymbolYellowDragonRef);
 
-      // canvasRef.current.width = width * dpr;
-      // canvasRef.current.height = height * dpr;
-      // if (ctxRef.current) {
-      //   ctxRef.current.scale(dpr, dpr);
-      //   canvasRef.current.style.height = height + "px";
-      //   canvasRef.current.style.width = width + "px";
-      // }
+      loadImage(spinBtn, spinBtnRef);
+      loadImage(spinActiveBtn, spinActiveBtnRef);
+      loadImage(spinDisabledBtn, spinDisabledBtnRef);
+      loadImage(borderImageSrc, borderRef);
+      loadImage(borderTopImageSrc, borderTopRef);
+      loadImage(columnTopImageSrc, columTopRef);
+      loadImage(columnBottomImageSrc, columBottomRef);
+      loadImage(yellowCircle, yellowCircleRef);
+      loadImage(infoBarImageSrc, infoBarImgRef);
+      loadImage(infoBarWithControlsImageSrc, infoBarWithControlsImgRef);
+      loadImage(rightAngleBtn, rightAngleBtnRef);
+      loadImage(rightAngleHoverBtn, rightAngleBtnHoverRef);
+      loadImage(rightAngleDisabledBtn, rightAngleBtnDisabledRef);
+      loadImage(leftAngleBtn, leftAngleBtnRef);
+      loadImage(leftAngleHoverBtn, leftAngleBtnHoverRef);
+      loadImage(leftAngleDisabledBtn, leftAngleBtnDisabledRef);
+      loadImage(greenLineImg, greenLineRef);
+      loadImage(buttonImg, buttonRef);
+      loadImage(buttonHoverImg, buttonHoverRef);
+      loadImage(buttonDisabledImg, buttonDisabledRef);
+      loadImage(winCombinationNumbersImage, winCombinationNumbersRef);
+
       window.requestAnimationFrame(draw);
     }
-  }, []);
+  }, [draw]);
 
   const handleClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = canvasRef.current!.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    if (x >= 665 && x <= 665 + 70 && y >= 620 && y <= 620 + 70) {
-      isRolling.current = true;
-      setTimeout(() => {
-        // isRolling.current = false;
-      }, 3000);
+    // spin btn
+    const radius = SPIN_BUTTON.h / 2;
+    const cx = SPIN_BUTTON.x + radius;
+    const cy = SPIN_BUTTON.y + radius;
+    const dx = cx - x;
+    const dy = cy - y;
+    if (dx * dx + dy * dy <= radius * radius) {
+      handleSpinClicked({
+        columns,
+        betLevelRef,
+        totalWinHideDelay,
+        currentShownWinCombinationIndex,
+        showWinCombinationTime,
+        frameRef,
+        coinValueRef,
+        winingDataRef,
+        isRolling,
+        setWin,
+        setCash,
+      });
+    }
+
+    // left bet level btn
+    if (
+      x >= BET_LEVEL_LEFT_BUTTON.x &&
+      x <= BET_LEVEL_LEFT_BUTTON.x + BET_LEVEL_LEFT_BUTTON.w &&
+      y >= BET_LEVEL_LEFT_BUTTON.y &&
+      y <= BET_LEVEL_LEFT_BUTTON.y + BET_LEVEL_LEFT_BUTTON.h &&
+      betLevelRef.current > MIN_BET_LEVEL
+    ) {
+      setBetLevel((prevValue) => prevValue - 1);
+    }
+
+    // right bet level btn
+    if (
+      x >= BET_LEVEL_RIGHT_BUTTON.x &&
+      x <= BET_LEVEL_RIGHT_BUTTON.x + BET_LEVEL_RIGHT_BUTTON.w &&
+      y >= BET_LEVEL_RIGHT_BUTTON.y &&
+      y <= BET_LEVEL_RIGHT_BUTTON.y + BET_LEVEL_RIGHT_BUTTON.h &&
+      betLevelRef.current < MAX_BET_LEVEL
+    ) {
+      setBetLevel((prevValue) => prevValue + 1);
+    }
+
+    // max bet btn
+    if (
+      x >= MAX_BET_BUTTON.x &&
+      x <= MAX_BET_BUTTON.x + MAX_BET_BUTTON.w &&
+      y >= MAX_BET_BUTTON.y &&
+      y <= MAX_BET_BUTTON.y + MAX_BET_BUTTON.h
+    ) {
+      if (betLevelRef.current !== MAX_BET_LEVEL) {
+        setBetLevel(MAX_BET_LEVEL);
+      } else if (!isRolling.current) {
+        handleSpinClicked({
+          columns,
+          betLevelRef,
+          totalWinHideDelay,
+          currentShownWinCombinationIndex,
+          showWinCombinationTime,
+          frameRef,
+          coinValueRef,
+          winingDataRef,
+          isRolling,
+          setWin,
+          setCash,
+        });
+      }
+    }
+
+    // left coin value btn
+    if (
+      x >= COIN_VALUE_LEFT_BUTTON.x &&
+      x <= COIN_VALUE_LEFT_BUTTON.x + COIN_VALUE_LEFT_BUTTON.w &&
+      y >= COIN_VALUE_LEFT_BUTTON.y &&
+      y <= COIN_VALUE_LEFT_BUTTON.y + COIN_VALUE_LEFT_BUTTON.h &&
+      coinValueRef.current > 0
+    ) {
+      setCoinValue((prevValue) => prevValue - 1);
+    }
+
+    // right coin value btn
+    if (
+      x >= COIN_VALUE_RIGHT_BUTTON.x &&
+      x <= COIN_VALUE_RIGHT_BUTTON.x + COIN_VALUE_RIGHT_BUTTON.w &&
+      y >= COIN_VALUE_RIGHT_BUTTON.y &&
+      y <= COIN_VALUE_RIGHT_BUTTON.y + COIN_VALUE_RIGHT_BUTTON.h &&
+      coinValueRef.current < COIN_VALUES.length - 1
+    ) {
+      setCoinValue((prevValue) => prevValue + 1);
     }
   };
 
@@ -301,21 +551,105 @@ const GameField = () => {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    if (x >= 665 && x <= 665 + 70 && y >= 620 && y <= 620 + 70) {
-      isHover.current.spinButton = true;
+    // spin btn
+    const radius = SPIN_BUTTON.h / 2;
+    const cx = SPIN_BUTTON.x + radius;
+    const cy = SPIN_BUTTON.y + radius;
+    const dx = cx - x;
+    const dy = cy - y;
+    if (dx * dx + dy * dy <= radius * radius) {
+      isControlsHover.current.spinButton = true;
     } else {
-      isHover.current.spinButton = false;
+      isControlsHover.current.spinButton = false;
     }
+
+    // left bet level btn
+    if (
+      x >= BET_LEVEL_LEFT_BUTTON.x &&
+      x <= BET_LEVEL_LEFT_BUTTON.x + BET_LEVEL_LEFT_BUTTON.w &&
+      y >= BET_LEVEL_LEFT_BUTTON.y &&
+      y <= BET_LEVEL_LEFT_BUTTON.y + BET_LEVEL_LEFT_BUTTON.h &&
+      betLevelRef.current > MIN_BET_LEVEL
+    ) {
+      isControlsHover.current.betLevelRefLeftBtn = true;
+    } else {
+      isControlsHover.current.betLevelRefLeftBtn = false;
+    }
+
+    // right bet level btn
+    if (
+      x >= BET_LEVEL_RIGHT_BUTTON.x &&
+      x <= BET_LEVEL_RIGHT_BUTTON.x + BET_LEVEL_RIGHT_BUTTON.w &&
+      y >= BET_LEVEL_RIGHT_BUTTON.y &&
+      y <= BET_LEVEL_RIGHT_BUTTON.y + BET_LEVEL_RIGHT_BUTTON.h &&
+      betLevelRef.current < MAX_BET_LEVEL
+    ) {
+      isControlsHover.current.betLevelRefRightBtn = true;
+    } else {
+      isControlsHover.current.betLevelRefRightBtn = false;
+    }
+
+    // max bet btn
+    if (
+      x >= MAX_BET_BUTTON.x &&
+      x <= MAX_BET_BUTTON.x + MAX_BET_BUTTON.w &&
+      y >= MAX_BET_BUTTON.y &&
+      y <= MAX_BET_BUTTON.y + MAX_BET_BUTTON.h
+    ) {
+      isControlsHover.current.maxBetBtn = true;
+    } else {
+      isControlsHover.current.maxBetBtn = false;
+    }
+
+    // left coin value btn
+    if (
+      x >= COIN_VALUE_LEFT_BUTTON.x &&
+      x <= COIN_VALUE_LEFT_BUTTON.x + COIN_VALUE_LEFT_BUTTON.w &&
+      y >= COIN_VALUE_LEFT_BUTTON.y &&
+      y <= COIN_VALUE_LEFT_BUTTON.y + COIN_VALUE_LEFT_BUTTON.h &&
+      coinValueRef.current > 0
+    ) {
+      isControlsHover.current.coinValueRefLeftBtn = true;
+    } else {
+      isControlsHover.current.coinValueRefLeftBtn = false;
+    }
+
+    // right coin value btn
+    if (
+      x >= COIN_VALUE_RIGHT_BUTTON.x &&
+      x <= COIN_VALUE_RIGHT_BUTTON.x + COIN_VALUE_RIGHT_BUTTON.w &&
+      y >= COIN_VALUE_RIGHT_BUTTON.y &&
+      y <= COIN_VALUE_RIGHT_BUTTON.y + COIN_VALUE_RIGHT_BUTTON.h &&
+      coinValueRef.current < COIN_VALUES.length - 1
+    ) {
+      isControlsHover.current.coinValueRefRightBtn = true;
+    } else {
+      isControlsHover.current.coinValueRefRightBtn = false;
+    }
+
+    // draw win combinations on hover
+    forEach(combinationsHover.current, ({ x1, x2, y1, y2 }, key) => {
+      if (x >= x1 && x <= x2 && y >= y1 && y <= y2) {
+        combinationsHover.current[key].hover = true;
+      } else {
+        combinationsHover.current[key].hover = false;
+      }
+    });
   };
 
+  const betValueInCash = calculateBet(betLevel, coinValue);
+
   return (
-    <canvas
-      width={1280}
-      height={720}
-      ref={canvasRef}
-      onClick={handleClick}
-      onPointerMove={handleMouseMove}
-    ></canvas>
+    <div className="container">
+      <canvas
+        width={1280}
+        height={720}
+        ref={canvasRef}
+        onClick={handleClick}
+        onPointerMove={handleMouseMove}
+      ></canvas>
+      <GameFieldFooter cash={cash} win={win} betValueInCash={betValueInCash} />
+    </div>
   );
 };
 
