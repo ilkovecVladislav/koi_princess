@@ -28,7 +28,7 @@ jobs:
       - name: yarn install, build, and test
         run: |
           yarn install
-          yarn build
+          yarn release
           yarn eslint
 
       - name: Create Sentry release
@@ -39,6 +39,7 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: production
+          sourcemaps: ./build
 
       - name: Deploy to netlify
         uses: netlify/actions/cli@master

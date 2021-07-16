@@ -8,9 +8,8 @@ import App from './App';
 
 Sentry.init({
   dsn: 'https://82f7054f610a414a851fefeff7b3f78b@o502735.ingest.sentry.io/5868302',
-  release: 'my-project-name@2.3.12',
+  release: process.env.REACT_APP_SENTRY_RELEASE,
   integrations: [new Integrations.BrowserTracing()],
-
   tracesSampleRate: 1.0,
 });
 
