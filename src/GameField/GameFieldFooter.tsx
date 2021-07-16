@@ -21,6 +21,14 @@ const GameFieldFooter: FC<Props> = ({ cash, betValueInCash, win }) => (
     <FooterItem data={cash} title="Cash" />
     <FooterItem data={betValueInCash} title="Bet" />
     <FooterItem data={win} title="Win" />
+    <button
+      type="button"
+      onClick={() => {
+        throw new Error('Some Error');
+      }}
+    >
+      Break the world
+    </button>
   </div>
 );
 
