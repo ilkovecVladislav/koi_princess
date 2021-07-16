@@ -27,7 +27,7 @@ jobs:
       - name: yarn install, build, and test
         run: |
           yarn install
-          yarn release
+          yarn build
           yarn eslint
 
       - name: Create Sentry release
