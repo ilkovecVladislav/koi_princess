@@ -28,18 +28,8 @@ jobs:
       - name: yarn install, build, and test
         run: |
           yarn install
-          yarn release
           yarn eslint
-
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: production
-          sourcemaps: ./build
+          yarn build
 
       - name: Deploy to netlify
         uses: netlify/actions/cli@master

@@ -1,10 +1,13 @@
 import { FC } from 'react';
 
-import GameField from 'GameField';
+import ErrorBoundary from 'components/ErrorBoundary';
+import Game from 'modules/Game';
 
 const App: FC = () => (
   <section className="main">
-    <GameField />
+    <ErrorBoundary>
+      <Game />
+    </ErrorBoundary>
   </section>
 );
 
