@@ -41,12 +41,21 @@ interface DrawGameFieldBordersParams {
   ctx: CanvasRenderingContext2D;
   borderTopRef: MutableRefObject<HTMLImageElement | null>;
   borderRef: MutableRefObject<HTMLImageElement | null>;
+  borderColumnBottomImageRef: MutableRefObject<HTMLImageElement | null>;
+  borderBottomChangeTimeRef: MutableRefObject<number>;
+  borderBottomOffsetIndexRef: MutableRefObject<number>;
 }
+
+const CHANGE_COLUMN_BOTTOM_IMAGE_TIME = 8;
+const TOTAL_COLUMN_BOTTOM_IMAGE_STATES = 4;
 
 export const drawGameFieldBorders = ({
   ctx,
   borderTopRef,
   borderRef,
+  borderColumnBottomImageRef,
+  borderBottomChangeTimeRef,
+  borderBottomOffsetIndexRef,
 }: DrawGameFieldBordersParams): void => {
   if (borderTopRef.current) {
     ctx.drawImage(borderTopRef.current, 230, 45, 930, 10);
@@ -58,4 +67,26 @@ export const drawGameFieldBorders = ({
     ctx.drawImage(borderRef.current, -1220, 30);
   }
   ctx.restore();
+
+  if (
+    borderColumnBottomImageRef.current &&
+    borderBottomChangeTimeRef.current < CHANGE_COLUMN_BOTTOM_IMAGE_TIME
+  ) {
+    const xOffset = borderBottomOffsetIndexRef.current * 27;
+    ctx.drawImage(borderColumnBottomImageRef.current, xOffset, 0, 23, 55, 207, 601, 23, 55);
+    ctx.drawImage(borderColumnBottomImageRef.current, xOffset, 0, 23, 55, 1161, 601, 23, 55);
+    borderBottomChangeTimeRef.current += 1;
+  } else if (
+    borderColumnBottomImageRef.current &&
+    borderBottomChangeTimeRef.current === CHANGE_COLUMN_BOTTOM_IMAGE_TIME
+  ) {
+    borderBottomChangeTimeRef.current = 0;
+    const xOffset = borderBottomOffsetIndexRef.current * 27;
+    borderBottomOffsetIndexRef.current += 1;
+    ctx.drawImage(borderColumnBottomImageRef.current, xOffset, 0, 23, 55, 207, 601, 23, 55);
+    ctx.drawImage(borderColumnBottomImageRef.current, xOffset, 0, 23, 55, 1161, 601, 23, 55);
+  }
+  if (borderBottomOffsetIndexRef.current === TOTAL_COLUMN_BOTTOM_IMAGE_STATES) {
+    borderBottomOffsetIndexRef.current = 0;
+  }
 };

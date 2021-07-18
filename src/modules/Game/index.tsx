@@ -10,7 +10,7 @@ import columnImageSrc from 'assets/decorative/column-bg.png';
 import columnTopImageSrc from 'assets/decorative/column-top.png';
 import columnBottomImageSrc from 'assets/decorative/column-bottom.png';
 import yellowCircle from 'assets/decorative/yellow-circle.png';
-
+import borderColumnBottomImage from 'assets/decorative/border-column-bottom.png';
 import aSymbolSrc from 'assets/symbols/a.png';
 import coinsSymbolSrc from 'assets/symbols/coins.png';
 import greenDragonSymbolSrc from 'assets/symbols/green-dragon.png';
@@ -31,7 +31,6 @@ import movingTenSymbolSrc from 'assets/symbols/moving-ten.png';
 import movingPrincessSymbolSrc from 'assets/symbols/moving-princess.png';
 import movingWildSymbolSrc from 'assets/symbols/moving-wild.png';
 import movingYellowDragonSymbolSrc from 'assets/symbols/moving-yellow-dragon.png';
-
 import spinBtn from 'assets/controls/spin-btn.png';
 import spinActiveBtn from 'assets/controls/spin-btn-active.png';
 import spinDisabledBtn from 'assets/controls/spin-btn-disabled.png';
@@ -46,7 +45,6 @@ import leftAngleDisabledBtn from 'assets/controls/left-angle-btn-disabled.png';
 import buttonImg from 'assets/controls/button.png';
 import buttonHoverImg from 'assets/controls/button-hover.png';
 import buttonDisabledImg from 'assets/controls/button-disabled.png';
-
 import greenLineImg from 'assets/green-line.png';
 import winCombinationNumbersImage from 'assets/win-combination-numbers.png';
 import Slot from 'types/Slot';
@@ -84,6 +82,7 @@ import {
   calculateBet,
   handleRolling,
   handleSpinClicked,
+  handleLoadingProgress,
 } from './utils/base';
 import {
   combinationsData,
@@ -168,6 +167,7 @@ const GameField: FC = () => {
 
   const winCombinationNumbersRef = useRef<HTMLImageElement | null>(null);
   const greenLineRef = useRef<HTMLImageElement | null>(null);
+  const borderColumnBottomImageRef = useRef<HTMLImageElement | null>(null);
 
   const numberOfUploadedImages = useRef(0);
   const isRolling = useRef<boolean>(false);
@@ -186,6 +186,8 @@ const GameField: FC = () => {
   const totalWinHideDelay = useRef<number>(TOTAL_WIN_HIDE_DELAY);
   const showWinCombinationTime = useRef<number>(SHOW_WIN_COMBINATION_TIME);
   const currentShownWinCombinationIndex = useRef<number>(0);
+  const borderBottomChangeTimeRef = useRef<number>(0);
+  const borderBottomOffsetIndexRef = useRef<number>(0);
 
   const symbols = useRef([
     { ref: symbolARef, movingSymbolRef: movingSymbolARef, value: A_SYMBOL },
@@ -266,29 +268,24 @@ const GameField: FC = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (numberOfUploadedImages.current !== NUMBER_OF_ALL_IMAGES) {
-      ctx.save();
-      ctx.fillStyle = 'black';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const fullRectWidth = 400;
-      const rectStartX = canvas.width / 2 - fullRectWidth / 2;
-      const percentageOfUploadedImages =
-        (numberOfUploadedImages.current * 100) / NUMBER_OF_ALL_IMAGES;
-      const loadingProgress = (percentageOfUploadedImages * fullRectWidth) / 100;
-
-      ctx.rect(rectStartX, canvas.height / 2, fullRectWidth, 10);
-      ctx.fillStyle = 'white';
-      ctx.fillRect(rectStartX, canvas.height / 2, fullRectWidth, 10);
-
-      ctx.rect(rectStartX, canvas.height / 2, loadingProgress, 10);
-      ctx.fillStyle = 'green';
-      ctx.fillRect(rectStartX, canvas.height / 2, loadingProgress, 10);
-      ctx.restore();
+      handleLoadingProgress({ ctx, canvas, numberOfUploadedImages });
     } else if (!isAllImagesLoadedRef.current) {
       setIsAllImagesLoaded(true);
     } else {
       drawBackground({ ctx, imageRef: backgroundRef });
-      drawPrincess({ ctx, imageRef: princessRef });
-      drawGameFieldBorders({ ctx, borderTopRef, borderRef });
+      drawPrincess({
+        ctx,
+        imageRef: princessRef,
+      });
+      drawGameFieldBorders({
+        ctx,
+        borderTopRef,
+        borderRef,
+        borderColumnBottomImageRef,
+        borderBottomChangeTimeRef,
+        borderBottomOffsetIndexRef,
+      });
+
       // call when spin button/max bet was clicked
       handleRolling({
         currentDistance,
@@ -456,6 +453,7 @@ const GameField: FC = () => {
       loadImage(buttonHoverImg, buttonHoverRef, numberOfUploadedImages);
       loadImage(buttonDisabledImg, buttonDisabledRef, numberOfUploadedImages);
       loadImage(winCombinationNumbersImage, winCombinationNumbersRef, numberOfUploadedImages);
+      loadImage(borderColumnBottomImage, borderColumnBottomImageRef, numberOfUploadedImages);
 
       window.requestAnimationFrame(draw);
     }

@@ -10,4 +10,4 @@ export const SHOW_WIN_COMBINATION_TIME = 80;
 export const ROLLING_DISTANCE = 1920;
 export const MIN_BET_LEVEL = 1;
 export const MAX_BET_LEVEL = 10;
-export const NUMBER_OF_ALL_IMAGES = 45;
+export const NUMBER_OF_ALL_IMAGES = 46;

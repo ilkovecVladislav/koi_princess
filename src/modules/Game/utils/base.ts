@@ -13,6 +13,7 @@ import {
   ROLLING_DISTANCE,
   SHOW_WIN_COMBINATION_TIME,
   TOTAL_WIN_HIDE_DELAY,
+  NUMBER_OF_ALL_IMAGES,
 } from '../constants/common';
 
 const TOTAL_SLOTS_BY_COLUMN = 12;
@@ -29,6 +30,35 @@ export const loadImage = (
     numberOfUploadedImages.current += 1;
   };
   image.src = src;
+};
+
+interface LoadingProgressParams {
+  ctx: CanvasRenderingContext2D;
+  canvas: HTMLCanvasElement;
+  numberOfUploadedImages: MutableRefObject<number>;
+}
+
+export const handleLoadingProgress = ({
+  ctx,
+  canvas,
+  numberOfUploadedImages,
+}: LoadingProgressParams): void => {
+  ctx.save();
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const fullRectWidth = 400;
+  const rectStartX = canvas.width / 2 - fullRectWidth / 2;
+  const percentageOfUploadedImages = (numberOfUploadedImages.current * 100) / NUMBER_OF_ALL_IMAGES;
+  const loadingProgress = (percentageOfUploadedImages * fullRectWidth) / 100;
+
+  ctx.rect(rectStartX, canvas.height / 2, fullRectWidth, 10);
+  ctx.fillStyle = 'white';
+  ctx.fillRect(rectStartX, canvas.height / 2, fullRectWidth, 10);
+
+  ctx.rect(rectStartX, canvas.height / 2, loadingProgress, 10);
+  ctx.fillStyle = 'green';
+  ctx.fillRect(rectStartX, canvas.height / 2, loadingProgress, 10);
+  ctx.restore();
 };
 
 export const getRandomSymbol = (
