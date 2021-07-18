@@ -1,6 +1,6 @@
 # Koi Princess Slot
 
-Implementation of the game [Koi Princess Slot](https://games.netent.com/video-slots/koi-princess/) .\
+Implementation of the game [Koi Princess](https://games.netent.com/video-slots/koi-princess/) .\
 Full description of the game, rules and requirements is [here](https://games.netent.com/video-slots/koi-princess/). Click on the question mark or info button in the left bottom conner.
 
 [Demo](https://koi-princess.netlify.app/)
@@ -64,3 +64,4 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 7. Add sentry
 8. Add game instructions
 9. Add stripe(or other payment system in development "mode")
+10. Add notifications when the player doesn't have enough money for playing

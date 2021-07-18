@@ -235,6 +235,7 @@ const GameField: FC = () => {
   const [betLevel, setBetLevel] = useState(1);
   const [coinValue, setCoinValue] = useState(0);
   const [isAllImagesLoaded, setIsAllImagesLoaded] = useState(false);
+  const cashRef = useRef<number>(cash);
   const betLevelRef = useRef<number>(betLevel);
   const coinValueRef = useRef<number>(coinValue);
   const numberOfCoinsRef = useRef<number>(0);
@@ -243,6 +244,7 @@ const GameField: FC = () => {
   useEffect(() => {
     betLevelRef.current = betLevel;
     coinValueRef.current = coinValue;
+    cashRef.current = cash;
     numberOfCoinsRef.current = Math.round(cash / COIN_VALUES[coinValue]);
     isAllImagesLoadedRef.current = isAllImagesLoaded;
   }, [betLevel, coinValue, cash, isAllImagesLoaded]);
@@ -472,19 +474,24 @@ const GameField: FC = () => {
       const dx = cx - x;
       const dy = cy - y;
       if (dx * dx + dy * dy <= radius * radius) {
-        handleSpinClicked({
-          columns,
-          betLevelRef,
-          totalWinHideDelay,
-          currentShownWinCombinationIndex,
-          showWinCombinationTime,
-          frameRef,
-          coinValueRef,
-          winingDataRef,
-          isRolling,
-          setWin,
-          setCash,
-        });
+        const bet = calculateBet(betLevelRef.current, coinValueRef.current);
+        if (bet > cashRef.current) {
+          window.alert(`You don't have enough money! Decrease your bet or float the balance`);
+        } else {
+          handleSpinClicked({
+            columns,
+            betLevelRef,
+            totalWinHideDelay,
+            currentShownWinCombinationIndex,
+            showWinCombinationTime,
+            frameRef,
+            coinValueRef,
+            winingDataRef,
+            isRolling,
+            setWin,
+            setCash,
+          });
+        }
       }
 
       // left bet level btn
@@ -516,8 +523,11 @@ const GameField: FC = () => {
         y >= MAX_BET_BUTTON.y &&
         y <= MAX_BET_BUTTON.y + MAX_BET_BUTTON.h
       ) {
+        const bet = calculateBet(betLevelRef.current, coinValueRef.current);
         if (betLevelRef.current !== MAX_BET_LEVEL) {
           setBetLevel(MAX_BET_LEVEL);
+        } else if (bet > cashRef.current) {
+          window.alert(`You don't have enough money! Decrease your bet or float the balance`);
         } else if (!isRolling.current) {
           handleSpinClicked({
             columns,
