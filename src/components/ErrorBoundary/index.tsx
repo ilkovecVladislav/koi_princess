@@ -1,4 +1,6 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, FC, ErrorInfo, ReactNode } from 'react';
+
+import './styles.css';
 
 interface Props {
   children: ReactNode;
@@ -7,6 +9,13 @@ interface Props {
 interface State {
   hasError: boolean;
 }
+
+const ErrorFallback: FC = () => (
+  <div className="error-container ">
+    <h1 className="error-title">Something went wrong</h1>
+    <p className="error-description">You may refresh the page or try later</p>
+  </div>
+);
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
@@ -22,13 +31,11 @@ class ErrorBoundary extends Component<Props, State> {
     console.error('Uncaught error:', error, errorInfo);
   }
 
-  public renderFallback = (): JSX.Element => <div>Something went wrong</div>;
-
-  public render(): React.ReactNode {
+  public render(): ReactNode {
     const { children } = this.props;
     const { hasError } = this.state;
 
-    return hasError ? this.renderFallback() : children;
+    return hasError ? <ErrorFallback /> : children;
   }
 }
 

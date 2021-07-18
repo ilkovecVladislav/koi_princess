@@ -4,11 +4,11 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Game from 'modules/Game';
 
 const App: FC = () => (
-  <section className="main">
-    <ErrorBoundary>
+  <ErrorBoundary>
+    <section className="main">
       <Game />
-    </ErrorBoundary>
-  </section>
+    </section>
+  </ErrorBoundary>
 );
 
 export default App;
