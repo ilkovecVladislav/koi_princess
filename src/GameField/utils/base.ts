@@ -20,11 +20,13 @@ const TOTAL_SLOTS_BY_COLUMN = 12;
 export const loadImage = (
   src: string,
   ref: MutableRefObject<HTMLImageElement | null>,
+  numberOfUploadedImages: MutableRefObject<number>,
   ...rest: number[]
 ): void => {
   const image = new Image(...rest);
   image.onload = () => {
     ref.current = image;
+    numberOfUploadedImages.current += 1;
   };
   image.src = src;
 };

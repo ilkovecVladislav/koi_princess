@@ -104,6 +104,7 @@ import {
   SHOW_WIN_COMBINATION_TIME,
   MAX_BET_LEVEL,
   MIN_BET_LEVEL,
+  NUMBER_OF_ALL_IMAGES,
 } from './constants/common';
 import {
   SPIN_BUTTON,
@@ -168,6 +169,7 @@ const GameField: FC = () => {
   const winCombinationNumbersRef = useRef<HTMLImageElement | null>(null);
   const greenLineRef = useRef<HTMLImageElement | null>(null);
 
+  const numberOfUploadedImages = useRef(0);
   const isRolling = useRef<boolean>(false);
   const winingDataRef = useRef<WiningData | null>(null);
   const combinationsHover = useRef(combinationsData);
@@ -232,15 +234,18 @@ const GameField: FC = () => {
   const [win, setWin] = useState(0);
   const [betLevel, setBetLevel] = useState(1);
   const [coinValue, setCoinValue] = useState(0);
+  const [isAllImagesLoaded, setIsAllImagesLoaded] = useState(false);
   const betLevelRef = useRef<number>(betLevel);
   const coinValueRef = useRef<number>(coinValue);
   const numberOfCoinsRef = useRef<number>(0);
+  const isAllImagesLoadedRef = useRef<boolean>(false);
 
   useEffect(() => {
     betLevelRef.current = betLevel;
     coinValueRef.current = coinValue;
     numberOfCoinsRef.current = Math.round(cash / COIN_VALUES[coinValue]);
-  }, [betLevel, coinValue, cash]);
+    isAllImagesLoadedRef.current = isAllImagesLoaded;
+  }, [betLevel, coinValue, cash, isAllImagesLoaded]);
 
   useEffect(() => {
     columns.current.forEach((column) => {
@@ -253,128 +258,145 @@ const GameField: FC = () => {
     if (!ctxRef.current || !canvasRef.current) {
       return;
     }
+
     const { current: canvas } = canvasRef;
     const { current: ctx } = ctxRef;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawBackground({ ctx, imageRef: backgroundRef });
-    drawPrincess({ ctx, imageRef: princessRef });
-    drawGameFieldBorders({ ctx, borderTopRef, borderRef });
+    if (numberOfUploadedImages.current !== NUMBER_OF_ALL_IMAGES) {
+      ctx.save();
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const fullRectWidth = 400;
+      const rectStartX = canvas.width / 2 - fullRectWidth / 2;
+      const percentageOfUploadedImages =
+        (numberOfUploadedImages.current * 100) / NUMBER_OF_ALL_IMAGES;
+      const loadingProgress = (percentageOfUploadedImages * fullRectWidth) / 100;
 
-    // call when spin button/max bet was clicked
-    handleRolling({
-      currentDistance,
-      isRolling,
-      winingDataRef,
-      coinValueRef,
-      setCash,
-      setWin,
-    });
+      ctx.rect(rectStartX, canvas.height / 2, fullRectWidth, 10);
+      ctx.fillStyle = 'white';
+      ctx.fillRect(rectStartX, canvas.height / 2, fullRectWidth, 10);
 
-    drawColumns({ ctx, columnBgRef, columTopRef, columBottomRef });
-
-    drawLogo({ ctx, imageRef: logoRef, canvasRef });
-
-    drawCombinations({ ctx, combinationsHover, yellowCircleRef });
-    drawSymbols({ ctx, columns, symbols, isRolling, winingDataRef });
-
-    // draw when the player win
-    showAllWiningCombinations({
-      ctx,
-      yellowCircleRef,
-      isRolling,
-      winingDataRef,
-      totalWinHideDelay,
-    });
-    showWiningCombination({
-      ctx,
-      yellowCircleRef,
-      isRolling,
-      winingDataRef,
-      totalWinHideDelay,
-      showWinCombinationTime,
-      currentShownWinCombinationIndex,
-    });
-    showAllWiningSlots({
-      ctx,
-      isRolling,
-      winingDataRef,
-      columns,
-      totalWinHideDelay,
-    });
-    showWiningCombinationSlots({
-      ctx,
-      isRolling,
-      winingDataRef,
-      columns,
-      totalWinHideDelay,
-      currentShownWinCombinationIndex,
-      winCombinationNumbersRef,
-    });
-    showTotalWiningInfoBar({
-      ctx,
-      frameRef,
-      infoBarImgRef,
-      isRolling,
-      winingDataRef,
-      totalWinHideDelay,
-    });
-
-    // draw controls panel
-    drawSpinButton({
-      ctx,
-      spinBtnRef,
-      isRolling,
-      isControlsHover,
-      spinActiveBtnRef,
-      spinDisabledBtnRef,
-    });
-    drawBetValueInfoBar({ ctx, infoBarImgRef, betLevelRef });
-    drawBetLevelInfoBar({
-      ctx,
-      infoBarWithControlsImgRef,
-      greenLineRef,
-      betLevelRef,
-    });
-    drawBetLevelInfoBarControls({
-      ctx,
-      rightAngleBtnDisabledRef,
-      rightAngleBtnHoverRef,
-      rightAngleBtnRef,
-      leftAngleBtnDisabledRef,
-      leftAngleBtnHoverRef,
-      leftAngleBtnRef,
-      betLevelRef,
-      isRolling,
-      isControlsHover,
-    });
-    drawMaxBetButton({
-      ctx,
-      buttonDisabledRef,
-      buttonHoverRef,
-      buttonRef,
-      isControlsHover,
-      isRolling,
-    });
-    drawCoinValueInfoBar({
-      ctx,
-      greenLineRef,
-      infoBarWithControlsImgRef,
-      coinValueRef,
-    });
-    drawCoinValueInfoBarControls({
-      ctx,
-      rightAngleBtnDisabledRef,
-      rightAngleBtnHoverRef,
-      rightAngleBtnRef,
-      leftAngleBtnDisabledRef,
-      leftAngleBtnHoverRef,
-      leftAngleBtnRef,
-      coinValueRef,
-      isRolling,
-      isControlsHover,
-    });
-    drawNumberOfCoinsInfoBar({ ctx, infoBarImgRef, numberOfCoinsRef });
+      ctx.rect(rectStartX, canvas.height / 2, loadingProgress, 10);
+      ctx.fillStyle = 'green';
+      ctx.fillRect(rectStartX, canvas.height / 2, loadingProgress, 10);
+      ctx.restore();
+    } else if (!isAllImagesLoadedRef.current) {
+      setIsAllImagesLoaded(true);
+    } else {
+      drawBackground({ ctx, imageRef: backgroundRef });
+      drawPrincess({ ctx, imageRef: princessRef });
+      drawGameFieldBorders({ ctx, borderTopRef, borderRef });
+      // call when spin button/max bet was clicked
+      handleRolling({
+        currentDistance,
+        isRolling,
+        winingDataRef,
+        coinValueRef,
+        setCash,
+        setWin,
+      });
+      drawColumns({ ctx, columnBgRef, columTopRef, columBottomRef });
+      drawLogo({ ctx, imageRef: logoRef, canvasRef });
+      drawCombinations({ ctx, combinationsHover, yellowCircleRef });
+      drawSymbols({ ctx, columns, symbols, isRolling, winingDataRef });
+      // draw when the player win
+      showAllWiningCombinations({
+        ctx,
+        yellowCircleRef,
+        isRolling,
+        winingDataRef,
+        totalWinHideDelay,
+      });
+      showWiningCombination({
+        ctx,
+        yellowCircleRef,
+        isRolling,
+        winingDataRef,
+        totalWinHideDelay,
+        showWinCombinationTime,
+        currentShownWinCombinationIndex,
+      });
+      showAllWiningSlots({
+        ctx,
+        isRolling,
+        winingDataRef,
+        columns,
+        totalWinHideDelay,
+      });
+      showWiningCombinationSlots({
+        ctx,
+        isRolling,
+        winingDataRef,
+        columns,
+        totalWinHideDelay,
+        currentShownWinCombinationIndex,
+        winCombinationNumbersRef,
+      });
+      showTotalWiningInfoBar({
+        ctx,
+        frameRef,
+        infoBarImgRef,
+        isRolling,
+        winingDataRef,
+        totalWinHideDelay,
+      });
+      // draw controls panel
+      drawSpinButton({
+        ctx,
+        spinBtnRef,
+        isRolling,
+        isControlsHover,
+        spinActiveBtnRef,
+        spinDisabledBtnRef,
+      });
+      drawBetValueInfoBar({ ctx, infoBarImgRef, betLevelRef });
+      drawBetLevelInfoBar({
+        ctx,
+        infoBarWithControlsImgRef,
+        greenLineRef,
+        betLevelRef,
+      });
+      drawBetLevelInfoBarControls({
+        ctx,
+        rightAngleBtnDisabledRef,
+        rightAngleBtnHoverRef,
+        rightAngleBtnRef,
+        leftAngleBtnDisabledRef,
+        leftAngleBtnHoverRef,
+        leftAngleBtnRef,
+        betLevelRef,
+        isRolling,
+        isControlsHover,
+      });
+      drawMaxBetButton({
+        ctx,
+        buttonDisabledRef,
+        buttonHoverRef,
+        buttonRef,
+        isControlsHover,
+        isRolling,
+      });
+      drawCoinValueInfoBar({
+        ctx,
+        greenLineRef,
+        infoBarWithControlsImgRef,
+        coinValueRef,
+      });
+      drawCoinValueInfoBarControls({
+        ctx,
+        rightAngleBtnDisabledRef,
+        rightAngleBtnHoverRef,
+        rightAngleBtnRef,
+        leftAngleBtnDisabledRef,
+        leftAngleBtnHoverRef,
+        leftAngleBtnRef,
+        coinValueRef,
+        isRolling,
+        isControlsHover,
+      });
+      drawNumberOfCoinsInfoBar({ ctx, infoBarImgRef, numberOfCoinsRef });
+    }
 
     window.requestAnimationFrame(draw);
   }, []);
@@ -383,61 +405,61 @@ const GameField: FC = () => {
     if (canvasRef.current) {
       ctxRef.current = canvasRef.current.getContext('2d');
 
-      loadImage(backgroundImageSrc, backgroundRef);
-      loadImage(logoImageSrc, logoRef);
-      loadImage(princessImageSrc, princessRef);
-      loadImage(columnImageSrc, columnBgRef);
+      loadImage(backgroundImageSrc, backgroundRef, numberOfUploadedImages);
+      loadImage(logoImageSrc, logoRef, numberOfUploadedImages);
+      loadImage(princessImageSrc, princessRef, numberOfUploadedImages);
+      loadImage(columnImageSrc, columnBgRef, numberOfUploadedImages);
 
       // base symbols
-      loadImage(aSymbolSrc, symbolARef);
-      loadImage(coinsSymbolSrc, symbolCoinsRef);
-      loadImage(greenDragonSymbolSrc, symbolGreenDragonRef);
-      loadImage(jSymbolSrc, symbolJRef);
-      loadImage(kSymbolSrc, symbolKRef);
-      loadImage(qSymbolSrc, symbolQRef);
-      loadImage(tenSymbolSrc, symbolTenRef);
-      loadImage(princessSymbolSrc, symbolPrincessRef);
-      loadImage(wildSymbolSrc, symbolWildRef);
-      loadImage(yellowDragonSymbolSrc, symbolYellowDragonRef);
+      loadImage(aSymbolSrc, symbolARef, numberOfUploadedImages);
+      loadImage(coinsSymbolSrc, symbolCoinsRef, numberOfUploadedImages);
+      loadImage(greenDragonSymbolSrc, symbolGreenDragonRef, numberOfUploadedImages);
+      loadImage(jSymbolSrc, symbolJRef, numberOfUploadedImages);
+      loadImage(kSymbolSrc, symbolKRef, numberOfUploadedImages);
+      loadImage(qSymbolSrc, symbolQRef, numberOfUploadedImages);
+      loadImage(tenSymbolSrc, symbolTenRef, numberOfUploadedImages);
+      loadImage(princessSymbolSrc, symbolPrincessRef, numberOfUploadedImages);
+      loadImage(wildSymbolSrc, symbolWildRef, numberOfUploadedImages);
+      loadImage(yellowDragonSymbolSrc, symbolYellowDragonRef, numberOfUploadedImages);
       // moving symbols
-      loadImage(movingASymbolSrc, movingSymbolARef);
-      loadImage(movingCoinsSymbolSrc, movingSymbolCoinsRef);
-      loadImage(movingGreenDragonSymbolSrc, movingSymbolGreenDragonRef);
-      loadImage(movingJSymbolSrc, movingSymbolJRef);
-      loadImage(movingKSymbolSrc, movingSymbolKRef);
-      loadImage(movingQSymbolSrc, movingSymbolQRef);
-      loadImage(movingTenSymbolSrc, movingSymbolTenRef);
-      loadImage(movingPrincessSymbolSrc, movingSymbolPrincessRef);
-      loadImage(movingWildSymbolSrc, movingSymbolWildRef);
-      loadImage(movingYellowDragonSymbolSrc, movingSymbolYellowDragonRef);
+      loadImage(movingASymbolSrc, movingSymbolARef, numberOfUploadedImages);
+      loadImage(movingCoinsSymbolSrc, movingSymbolCoinsRef, numberOfUploadedImages);
+      loadImage(movingGreenDragonSymbolSrc, movingSymbolGreenDragonRef, numberOfUploadedImages);
+      loadImage(movingJSymbolSrc, movingSymbolJRef, numberOfUploadedImages);
+      loadImage(movingKSymbolSrc, movingSymbolKRef, numberOfUploadedImages);
+      loadImage(movingQSymbolSrc, movingSymbolQRef, numberOfUploadedImages);
+      loadImage(movingTenSymbolSrc, movingSymbolTenRef, numberOfUploadedImages);
+      loadImage(movingPrincessSymbolSrc, movingSymbolPrincessRef, numberOfUploadedImages);
+      loadImage(movingWildSymbolSrc, movingSymbolWildRef, numberOfUploadedImages);
+      loadImage(movingYellowDragonSymbolSrc, movingSymbolYellowDragonRef, numberOfUploadedImages);
 
-      loadImage(spinBtn, spinBtnRef);
-      loadImage(spinActiveBtn, spinActiveBtnRef);
-      loadImage(spinDisabledBtn, spinDisabledBtnRef);
-      loadImage(borderImageSrc, borderRef);
-      loadImage(borderTopImageSrc, borderTopRef);
-      loadImage(columnTopImageSrc, columTopRef);
-      loadImage(columnBottomImageSrc, columBottomRef);
-      loadImage(yellowCircle, yellowCircleRef);
-      loadImage(infoBarImageSrc, infoBarImgRef);
-      loadImage(infoBarWithControlsImageSrc, infoBarWithControlsImgRef);
-      loadImage(rightAngleBtn, rightAngleBtnRef);
-      loadImage(rightAngleHoverBtn, rightAngleBtnHoverRef);
-      loadImage(rightAngleDisabledBtn, rightAngleBtnDisabledRef);
-      loadImage(leftAngleBtn, leftAngleBtnRef);
-      loadImage(leftAngleHoverBtn, leftAngleBtnHoverRef);
-      loadImage(leftAngleDisabledBtn, leftAngleBtnDisabledRef);
-      loadImage(greenLineImg, greenLineRef);
-      loadImage(buttonImg, buttonRef);
-      loadImage(buttonHoverImg, buttonHoverRef);
-      loadImage(buttonDisabledImg, buttonDisabledRef);
-      loadImage(winCombinationNumbersImage, winCombinationNumbersRef);
+      loadImage(spinBtn, spinBtnRef, numberOfUploadedImages);
+      loadImage(spinActiveBtn, spinActiveBtnRef, numberOfUploadedImages);
+      loadImage(spinDisabledBtn, spinDisabledBtnRef, numberOfUploadedImages);
+      loadImage(borderImageSrc, borderRef, numberOfUploadedImages);
+      loadImage(borderTopImageSrc, borderTopRef, numberOfUploadedImages);
+      loadImage(columnTopImageSrc, columTopRef, numberOfUploadedImages);
+      loadImage(columnBottomImageSrc, columBottomRef, numberOfUploadedImages);
+      loadImage(yellowCircle, yellowCircleRef, numberOfUploadedImages);
+      loadImage(infoBarImageSrc, infoBarImgRef, numberOfUploadedImages);
+      loadImage(infoBarWithControlsImageSrc, infoBarWithControlsImgRef, numberOfUploadedImages);
+      loadImage(rightAngleBtn, rightAngleBtnRef, numberOfUploadedImages);
+      loadImage(rightAngleHoverBtn, rightAngleBtnHoverRef, numberOfUploadedImages);
+      loadImage(rightAngleDisabledBtn, rightAngleBtnDisabledRef, numberOfUploadedImages);
+      loadImage(leftAngleBtn, leftAngleBtnRef, numberOfUploadedImages);
+      loadImage(leftAngleHoverBtn, leftAngleBtnHoverRef, numberOfUploadedImages);
+      loadImage(leftAngleDisabledBtn, leftAngleBtnDisabledRef, numberOfUploadedImages);
+      loadImage(greenLineImg, greenLineRef, numberOfUploadedImages);
+      loadImage(buttonImg, buttonRef, numberOfUploadedImages);
+      loadImage(buttonHoverImg, buttonHoverRef, numberOfUploadedImages);
+      loadImage(buttonDisabledImg, buttonDisabledRef, numberOfUploadedImages);
+      loadImage(winCombinationNumbersImage, winCombinationNumbersRef, numberOfUploadedImages);
 
       window.requestAnimationFrame(draw);
     }
   }, [draw]);
 
-  const handleClick = (event: MouseEvent<HTMLCanvasElement>) => {
+  const handleClick = (event: MouseEvent<HTMLCanvasElement>): void => {
     if (canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
       const x = event.clientX - rect.left;
@@ -537,7 +559,7 @@ const GameField: FC = () => {
     }
   };
 
-  const handleMouseMove = (event: MouseEvent<HTMLCanvasElement>) => {
+  const handleMouseMove = (event: MouseEvent<HTMLCanvasElement>): void => {
     if (canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
       const x = event.clientX - rect.left;
@@ -641,7 +663,9 @@ const GameField: FC = () => {
         onClick={handleClick}
         onPointerMove={handleMouseMove}
       />
-      <GameFieldFooter cash={cash} win={win} betValueInCash={betValueInCash} />
+      {isAllImagesLoaded && (
+        <GameFieldFooter cash={cash} win={win} betValueInCash={betValueInCash} />
+      )}
     </div>
   );
 };
