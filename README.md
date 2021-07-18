@@ -1,10 +1,24 @@
-# Getting Started with Create React App
+# Koi Princess Slot
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Implementation of the game [Koi Princess Slot](https://games.netent.com/video-slots/koi-princess/) .\
+Full description of the game, rules and requirements is [here](https://games.netent.com/video-slots/koi-princess/). Click on the question mark or info button in the left bottom conner.
 
-## Available Scripts
+[Demo](https://koi-princess.netlify.app/)
 
-In the project directory, you can run:
+## Run locally
+
+To start the app locally you should clone **this repository**, go to the
+`koi_princess` folder, install dependencies and run
+project. Steps to help:
+
+```
+git clone https://github.com/ilkovecVladislav/koi_princess.git
+cd koi_princess
+yarn install
+yarn start
+```
+
+## Commands
 
 ### `yarn start`
 
@@ -39,8 +53,14 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+# Steps to improve
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. Add bonus games
+2. Add/Update animations(background animations, spin animations)
+3. Add scaling
+4. Add tests
+5. Add sound effects
+6. Add "auto play" mode
+7. Add sentry
+8. Add game instructions
+9. Add stripe(or other payment system in development "mode")
